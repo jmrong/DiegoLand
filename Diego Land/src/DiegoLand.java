@@ -2,8 +2,6 @@
 // Nation management game
 // Jack and Anish
 
-// juicy
-
 import java.util.Scanner;
 import java.util.Random;
 import java.math.*;
