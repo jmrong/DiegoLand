@@ -2,8 +2,7 @@
 // Nation management game
 // Jack and Anish
 
-import java.util.Scanner;
-import java.util.Random;
+import java.util.*;
 import java.math.*;
 
 public class DiegoLand {
@@ -43,6 +42,10 @@ public class DiegoLand {
 		double[][] stats_flora = {{0, 0.75, 1, 6, 3, 0.08, 1, 3}, {0, 0.75, 2, 8, 3, 0.45, 1, 5}, {1, 0.7, 1, 3}, {2, 0.35, 3, 10}, {0, 0.3, 1, 5, 3, 0.45, 1, 5}};
 		double[][] stats_mined = {{0, 0.6, 3, 20, 1, 0.65, 3, 20, 2, 0.1, 2, 20, 3, 0.35, 3, 12}, {0, 0.3, 2, 15, 1, 0.65, 1, 18, 3, 0.3, 1, 10}, {0, 0.25, 3, 12, 1, 0.35, 3, 12, 3, 0.1, 2, 8}, {0, 0.4, 5, 35, 1, 0.55, 5, 45, 2, 0.3, 5, 35, 3, 0.1, 5, 30}, {0, 0.1, 3, 8, 1, 0.5, 5, 45, 2, 0.05, 3, 14, 3, 0.3, 3, 10}, {1, 0.2, 3, 40, 2, 0.5, 3, 12}, {1, 0.3, 3, 18, 2, 0.3, 1, 25}, {0, 0.3, 3, 20, 3, 0.1, 3, 15}, {0, 0.03, 1, 5, 1, 0.08, 1, 8, 2, 0.01, 1, 4, 3, 0.02, 1, 5}};
 		
+	// FACTORIES
+	
+	Factory[] factory_templates = {};
+		
 	// ALL COMMANDS
 		
 	void cmd_resources() {
@@ -51,6 +54,16 @@ public class DiegoLand {
 		for (int i = 0; i < rsc.length; i++) {
 			
 			System.out.println(rsc_names[i] + ": " + rsc[i]);
+			
+		}
+		if (day == 1 && time == 0) {
+			
+			System.out.println();
+			System.out.println("Nice job!");
+			System.out.println("There are many different commands that perform various actions.");
+			System.out.println("You can view all unlocked commands with the HELP command.");
+			System.out.println("Your next step should be constructing some factories to help you gain food.");
+			System.out.println("Good luck!");
 			
 		}
 		
@@ -83,7 +96,7 @@ public class DiegoLand {
 				System.out.println("Welcome to Diego Land!");
 				System.out.println("Your job is to allow your newly generated virtual nation to thrive.");
 				System.out.println("You must manage your resources, build up a military, and survive attacks from neighboring rivals.");
-				System.out.println("To do this, you can type in COMMANDS every turn.");
+				System.out.println("To do this, you can type in various COMMANDS every turn.");
 				System.out.println("Start off by typing in the RESOURCES command below.");
 				System.out.println();
 				
@@ -93,6 +106,7 @@ public class DiegoLand {
 				
 				System.out.print("Command: ");
 				String command = scan.next();
+				System.out.println();
 				command(command);
 				System.out.println();
 				
