@@ -1,6 +1,6 @@
 // Diego Land
 // Nation management game
-// Jack and Anish
+// Jack and Anishhhhhhh
 
 import java.util.*;
 import java.math.*;
