@@ -3,6 +3,7 @@
 // Jack and Anishhhhhhh
 
 import java.util.*;
+import java.io.FileWriter;
 import java.math.*;
 
 public class DiegoLand {
@@ -298,6 +299,19 @@ public class DiegoLand {
 		System.out.println();
 		game.GameLoop();
 		
+	}
+	
+	public static void SaveData()  throws Exception
+	{
+		String csvFile = "C:\\Users\\Raman\\Desktop\\save_file.csv";
+		Saving save = new Saving();
+		int[] arr = { 1, 2, 3, 4, 5, 6};
+		FileWriter writer = new FileWriter(csvFile);
+		save.Save(arr, writer);
+		save.Save(arr[0], writer);
+		
+		writer.flush();
+        writer.close();
 	}
 
 }
