@@ -21,6 +21,23 @@ public class DiegoLand {
 	boolean run = true;
 	int apd = 4;
 	
+	int[] tiers = {0, 100, 300, 800, 12000, 30000, 60000, 120000};
+	int getTier() {
+		
+		int _return = -1;
+		for (int i = 0; i < tiers.length; i++) {
+			
+			if (tiers[i] > population) {
+				
+				_return = i;
+				
+			}
+			
+		}
+		return _return;
+		
+	}
+	
 	// RESOURCES
 
 	int[] rsc = {20000, 500, 100, 150, 20, 50, 30, 5, 0};
@@ -31,7 +48,7 @@ public class DiegoLand {
 		int[] rsc_land = new int[3 + 1];
 		int[] rsc_fauna = new int[3 + 1];
 		int[] rsc_flora = new int[4 + 1];
-		int[] rsc_mined = new int[8 + 1];
+		int[] rsc_mined = new int[9 + 1];
 		
 		String[] names_land = {"Forest", "Desert", "Lake", "Grassland"};
 		String[] names_fauna = {"Bear", "Salmon", "Shark", "Cow"};
@@ -50,16 +67,16 @@ public class DiegoLand {
 			new Factory(new int[][] {{0, 5}, {}, {}}, new int[] {1, 2}, new int[][] {{0, 15, 3, 5}, {}, {4, 1}}, 2, "Orchard"),
 			new Factory(new int[][] {{0, 4, 2, 1}, {3, 1}, {}}, new int[] {1, 6}, new int[][] {{5, 1}, {}, {}}, 1, "Farm"),
 			new Factory(new int[][] {{0, 4}, {}, {}}, new int[] {2, 4}, new int[][] {{0, 10, 3, 10}, {5, 1}, {}}, 1, "Windmill"),
-			new Factory(new int[][] {{0, 10}, {}, {}}, new int[] {2, 12}, new int[][] {{0, 30, 3, 10, 5, 10}, {2, 1}, {}}, 1, "Hydroelectric Plant"),
-			new Factory(new int[][] {{0, 5}, {}, {0, 2}}, new int[] {2, 15}, new int[][] {{0, 25, 3, 10, 5, 8}, {5, 1}, {}}, 1, "Power Plant"),
 			new Factory(new int[][] {{0, 4}, {}, {}}, new int[] {3, 3}, new int[][] {{0, 10}, {}, {1, 1}}, 1, "Lumberjack"),
 			new Factory(new int[][] {{0, 4, 2, 3}, {}, {5, 2}}, new int[] {3, 8}, new int[][] {{0, 8, 3, 10, 5, 2}, {5, 1}, {}}, 2, "Brickworks"),
 			new Factory(new int[][] {{0, 6, 2, 2}, {}, {6, 2}}, new int[] {3, 8}, new int[][] {{0, 10, 3, 4}, {1, 1}, {}}, 2, "Sandstone Quarry"),
-			new Factory(new int[][] {{0, 5, 2, 3}, {}, {1, 2}}, new int[] {5, 5}, new int[][] {{0, 25, 3, 10}, {5, 1}, {}}, 1, "Iron Smelter"),
+			new Factory(new int[][] {{0, 10}, {}, {}}, new int[] {2, 12}, new int[][] {{0, 30, 3, 10, 5, 10}, {2, 1}, {}}, 1, "Hydroelectric Plant"),
+			new Factory(new int[][] {{0, 5}, {}, {0, 2}}, new int[] {2, 15}, new int[][] {{0, 25, 3, 10, 5, 8}, {5, 1}, {}}, 1, "Power Plant"),
 			new Factory(new int[][] {{0, 4}, {}, {}}, new int[] {1, 1, 4, 1}, new int[][] {{0, 6}, {}, {2, 1}}, 1, "Cactus Potter"),
 			new Factory(new int[][] {{0, 12}, {0, 1}, {}}, new int[] {1, 5, 4, 3}, new int[][] {{0, 15}, {5, 1}, {}}, 2, "Hunter"),
 			new Factory(new int[][] {{0, 10}, {2, 1}, {}}, new int[] {1, 7, 4, 5}, new int[][] {{0, 8, 3, 4}, {2, 1}, {}}, 2, "Shark Trapper"),
 			new Factory(new int[][] {{0, 10, 2, 1}, {}, {}}, new int[] {3, 4}, new int[][] {{0, 8, 3, 8, 5, 2}, {1, 1}, {}}, 2, "Jeweler"),
+			new Factory(new int[][] {{0, 5, 2, 3}, {}, {1, 2}}, new int[] {5, 5}, new int[][] {{0, 25, 3, 10}, {5, 1}, {}}, 1, "Iron Smelter"),
 			new Factory(new int[][] {{0, 6, 2, 4}, {}, {2, 2}}, new int[] {5, 8}, new int[][] {{0, 28, 3, 15}, {5, 1}, {}}, 1, "Copper Mine"),
 			new Factory(new int[][] {{0, 8, 2, 5, 5, 1}, {}, {3, 2}}, new int[] {6, 15}, new int[][] {{0, 30, 3, 30, 5, 10}, {5, 1}, {}}, 1, "Ammunition Factory"),
 			new Factory(new int[][] {{0, 10, 2, 6, 5, 1}, {}, {4, 2}}, new int[] {6, 25}, new int[][] {{0, 35, 3, 35, 5, 12}, {5, 1}, {}}, 2, "Explosives Factory"),
@@ -91,6 +108,18 @@ public class DiegoLand {
 		}
 		
 	}
+	
+	void cmd_constructf() {
+		
+		System.out.println("CONSTRUCT FACTORIES");
+		int last;
+		if (getTier() == 1) {
+			
+			last = 8;
+			
+		}
+		
+	}
 		
 	// COMMAND HANDLER
 		
@@ -100,6 +129,15 @@ public class DiegoLand {
 		
 		case "RESOURCES":
 			cmd_resources();
+			break;
+			
+		case "CONSTRUCT":
+			System.out.println("Trying to construct? Use CONSTRUCTF for factories and CONSTRUCTB for buildings.");
+			break;
+			
+		case "CONSTRUCTF":
+			cmd_constructf();
+			break;
 		
 		}
 		
@@ -314,6 +352,7 @@ public class DiegoLand {
 		scan.nextLine();
 		System.out.println("***");
 		System.out.println();
+		
 		game.GameLoop();
 		
 	}
