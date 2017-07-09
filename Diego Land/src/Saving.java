@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Iterator;
 
 public class Saving {
-	String csvFile = "C:\\Users\\Raman\\Desktop\\save_file.csv";
 	public void Save(int[] arr, FileWriter writer) throws IOException
 	{
 		String[] list = new String[arr.length];

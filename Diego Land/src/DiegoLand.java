@@ -357,14 +357,24 @@ public class DiegoLand {
 		
 	}
 	
-	public static void SaveData()  throws Exception
+	public static void SaveData(int population, int day, int time, int apd, 
+			int[] rsc, int[] rsc_land, int[] rsc_fauna, int[] rsc_flora, int[] rsc_mined)  throws Exception
 	{
 		String csvFile = "C:\\Users\\Raman\\Desktop\\save_file.csv";
 		Saving save = new Saving();
-		int[] arr = { 1, 2, 3, 4, 5, 6};
+		
 		FileWriter writer = new FileWriter(csvFile);
-		save.Save(arr, writer);
-		save.Save(arr[0], writer);
+		
+		save.Save(population, writer);
+		save.Save(day, writer);
+		save.Save(time, writer);
+		save.Save(apd, writer);
+		
+		save.Save(rsc, writer);
+		save.Save(rsc_land, writer);
+		save.Save(rsc_fauna, writer);
+		save.Save(rsc_flora, writer);
+		save.Save(rsc_mined, writer);
 		
 		writer.flush();
         writer.close();
