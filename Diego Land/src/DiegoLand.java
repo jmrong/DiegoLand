@@ -25,7 +25,7 @@ public class DiegoLand {
 	int getTier() {
 		
 		int _return = -1;
-		for (int i = 0; i < tiers.length; i++) {
+		for (int i = 0; i < tiers.length && _return == -1; i++) {
 			
 			if (tiers[i] > population) {
 				
@@ -50,7 +50,7 @@ public class DiegoLand {
 		int[] rsc_flora = new int[4 + 1];
 		int[] rsc_mined = new int[9 + 1];
 		
-		String[] names_land = {"Forest", "Desert", "Lake", "Grassland"};
+		String[] names_land = {"Forest", "Desert", "Lake", "Grassland", "Cleared Land"};
 		String[] names_fauna = {"Bear", "Salmon", "Shark", "Cow"};
 		String[] names_flora = {"Berry Bush", "Oak Tree", "Cactus", "Coral", "Apple Tree"};
 		String[] names_mined = {"Coal", "Iron", "Copper", "Sulfur", "Saltpeter", "Clay", "Sandstone", "Petroleum", "Crude Oil", "Uraninite"};
@@ -83,8 +83,16 @@ public class DiegoLand {
 			new Factory(new int[][] {{0, 10, 2, 8}, {}, {7, 1}}, new int[] {7, 6}, new int[][] {{0, 32, 3, 22, 5, 15}, {5, 1}, {}}, 2, "Petroleum Refinery"),
 			new Factory(new int[][] {{0, 10, 2, 8}, {}, {8, 1}}, new int[] {7, 6}, new int[][] {{0, 32, 3, 24, 5, 14}, {5, 1}, {}}, 2, "Crude Oil Refinery"),
 			new Factory(new int[][] {{0, 40, 2, 12}, {}, {9, 1}}, new int[] {8, 4}, new int[][] {{0, 100, 3, 150, 5, 60}, {5, 2}, {}}, 1, "Nuclear Reactor"),
-			new Factory(new int[][] {{0, 25, 9, 1}, {}, {}}, new int[] {2, 50}, new int[][] {{0, 65, 3, 100, 5, 50}, {5, 2}, {}}, 1, "Nuclear Power Plant"),
+			new Factory(new int[][] {{0, 25, 9, 1}, {}, {}}, new int[] {2, 50}, new int[][] {{0, 65, 3, 100, 5, 50}, {5, 2}, {}}, 1, "Nuclear Power Plant")
 	};
+	int[] factories = new int[factory_templates.length];
+	int[] factories_lastCollected = new int[factory_templates.length];
+	for (int i = 0; i < factories.length; i++) {
+		
+		factories[i] = 0;
+		factories_lastCollected[i] = 0;
+		
+	}
 	
 	// ALL COMMANDS
 		
@@ -112,10 +120,124 @@ public class DiegoLand {
 	void cmd_constructf() {
 		
 		System.out.println("CONSTRUCT FACTORIES");
-		int last;
+		int last = 0;
 		if (getTier() == 1) {
 			
 			last = 8;
+			
+		} else if (getTier() == 2) {
+			
+			last = 16;
+			
+		} else if (getTier() == 3) {
+			
+			last = 18;
+			
+		} else if (getTier() <= 5) {
+			
+			last = 20;
+			
+		} else if (getTier() <= 7) {
+			
+			last = 22;
+			
+		}
+		for (int i = 0; i < last; i++) {
+			
+			System.out.print((i + 1) + ") " + factory_templates[i].name + "  ");
+			if ((i + 1) % 3 == 0) {
+				
+				System.out.println();
+				
+			}
+			
+		}
+		System.out.println();
+		System.out.print("Type # to view info/buy, -1 to cancel: ");
+		int index = scan.nextInt();
+		if (index >= 1 && index <= last) {
+			
+			String _input = "";
+			String _output = "";
+			String _cost = "";
+			// _input
+			for (int i = 0; i < 3; i++) {
+				
+				if (i == 0) {
+					
+					for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+						
+						_input += factory_templates[index - 1].input[i][j + 1] + " " + rsc_names[factory_templates[index - 1].input[i][j]] + " ";
+						
+					}
+					
+				}
+				if (i == 1 && factory_templates[index - 1].input[1].length != 0) {
+					
+					for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+						
+						_input += factory_templates[index - 1].input[i][j + 1] + " " + names_fauna[factory_templates[index - 1].input[i][j]] + " ";
+						
+					}
+					
+				}
+				if (i == 2 && factory_templates[index - 1].input[2].length != 0) {
+					
+					for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+						
+						_input += factory_templates[index - 1].input[i][j + 1] + " " + names_mined[factory_templates[index - 1].input[i][j]] + " ";
+						
+					}
+					
+				}
+				
+			}
+			// _output
+			for (int i = 0; i < factory_templates[index - 1].output.length; i += 2) {
+				
+				_output += factory_templates[index - 1].output[i + 1] + " " + rsc_names[factory_templates[index - 1].output[i]] + " ";
+				
+			}
+			//_cost
+			for (int i = 0; i < 3; i++) {
+				
+				if (i == 0) {
+					
+					for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
+						
+						_cost += factory_templates[index - 1].cost[i][j + 1] + " " + rsc_names[factory_templates[index - 1].cost[i][j]] + " ";
+						
+					}
+					
+				}
+				if (i == 1 && factory_templates[index - 1].cost[1].length != 0) {
+					
+					for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+					
+						_cost += factory_templates[index - 1].cost[i][j + 1] + " " + names_land[factory_templates[index - 1].cost[i][j]] + " ";
+						
+					}
+					
+				}
+				if (i == 2 && factory_templates[index - 1].cost[2].length != 0) {
+					
+					for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
+						
+						_cost += factory_templates[index - 1].cost[i][j + 1] + " " + names_flora[factory_templates[index - 1].cost[i][j]] + " ";
+						
+					}
+					
+				}
+				
+			}
+			System.out.println(factory_templates[index - 1].name + ": " + _input + "-> " + _output);
+			System.out.println(_cost + "to construct; you have " + factories[index - 1] + " " + factory_templates[index - 1].name + " already");
+			System.out.print("Enter quantity to build, -1 to cancel: ");
+			scan.next();
+			
+		} else {
+			
+			System.out.println("CONSTRUCTF cancelled");
 			
 		}
 		
@@ -138,6 +260,9 @@ public class DiegoLand {
 		case "CONSTRUCTF":
 			cmd_constructf();
 			break;
+			
+		default:
+			System.out.println("Invalid command entered, run HELP to view a list of commands");
 		
 		}
 		
@@ -163,7 +288,7 @@ public class DiegoLand {
 				
 			}
 			
-			for (time = 0; time < apd; ) {
+			for (time = 0; time < apd;) {
 				
 				System.out.print("Command: ");
 				String command = scan.next();
