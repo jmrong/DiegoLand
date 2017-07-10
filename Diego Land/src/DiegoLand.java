@@ -25,7 +25,7 @@ public class DiegoLand {
 	int getTier() {
 		
 		int _return = -1;
-		for (int i = 0; i < tiers.length; i++) {
+		for (int i = 0; i < tiers.length && _return == -1; i++) {
 			
 			if (tiers[i] > population) {
 				
@@ -45,12 +45,12 @@ public class DiegoLand {
 	
 		// NATURAL
 		
-		int[] rsc_land = new int[3 + 1];
+		int[] rsc_land = new int[4 + 1];
 		int[] rsc_fauna = new int[3 + 1];
 		int[] rsc_flora = new int[4 + 1];
 		int[] rsc_mined = new int[9 + 1];
 		
-		String[] names_land = {"Forest", "Desert", "Lake", "Grassland"};
+		String[] names_land = {"Forest", "Desert", "Lake", "Grassland", "Cleared Land"};
 		String[] names_fauna = {"Bear", "Salmon", "Shark", "Cow"};
 		String[] names_flora = {"Berry Bush", "Oak Tree", "Cactus", "Coral", "Apple Tree"};
 		String[] names_mined = {"Coal", "Iron", "Copper", "Sulfur", "Saltpeter", "Clay", "Sandstone", "Petroleum", "Crude Oil", "Uraninite"};
@@ -65,26 +65,28 @@ public class DiegoLand {
 			new Factory(new int[][] {{0, 3}, {}, {}}, new int[]{1, 2}, new int[][] {{0, 10}, {}, {0, 1}}, 2, "Berry Picker"),
 			new Factory(new int[][] {{0, 4}, {1, 1}, {}}, new int[] {1, 4}, new int[][] {{0, 10}, {2, 1}, {}}, 1, "Salmon Fisher"),
 			new Factory(new int[][] {{0, 5}, {}, {}}, new int[] {1, 2}, new int[][] {{0, 15, 3, 5}, {}, {4, 1}}, 2, "Orchard"),
-			new Factory(new int[][] {{0, 4, 2, 1}, {3, 1}, {}}, new int[] {1, 6}, new int[][] {{5, 1}, {}, {}}, 1, "Farm"),
-			new Factory(new int[][] {{0, 4}, {}, {}}, new int[] {2, 4}, new int[][] {{0, 10, 3, 10}, {5, 1}, {}}, 1, "Windmill"),
+			new Factory(new int[][] {{0, 4, 2, 1}, {3, 1}, {}}, new int[] {1, 6}, new int[][] {{0, 15, 3, 5}, {4, 1}, {}}, 1, "Farm"),
+			new Factory(new int[][] {{0, 4}, {}, {}}, new int[] {2, 4}, new int[][] {{0, 10, 3, 10}, {4, 1}, {}}, 1, "Windmill"),
 			new Factory(new int[][] {{0, 4}, {}, {}}, new int[] {3, 3}, new int[][] {{0, 10}, {}, {1, 1}}, 1, "Lumberjack"),
-			new Factory(new int[][] {{0, 4, 2, 3}, {}, {5, 2}}, new int[] {3, 8}, new int[][] {{0, 8, 3, 10, 5, 2}, {5, 1}, {}}, 2, "Brickworks"),
+			new Factory(new int[][] {{0, 4, 2, 3}, {}, {5, 2}}, new int[] {3, 8}, new int[][] {{0, 8, 3, 10, 5, 2}, {4, 1}, {}}, 2, "Brickworks"),
 			new Factory(new int[][] {{0, 6, 2, 2}, {}, {6, 2}}, new int[] {3, 8}, new int[][] {{0, 10, 3, 4}, {1, 1}, {}}, 2, "Sandstone Quarry"),
 			new Factory(new int[][] {{0, 10}, {}, {}}, new int[] {2, 12}, new int[][] {{0, 30, 3, 10, 5, 10}, {2, 1}, {}}, 1, "Hydroelectric Plant"),
-			new Factory(new int[][] {{0, 5}, {}, {0, 2}}, new int[] {2, 15}, new int[][] {{0, 25, 3, 10, 5, 8}, {5, 1}, {}}, 1, "Power Plant"),
+			new Factory(new int[][] {{0, 5}, {}, {0, 2}}, new int[] {2, 15}, new int[][] {{0, 25, 3, 10, 5, 8}, {4, 1}, {}}, 1, "Power Plant"),
 			new Factory(new int[][] {{0, 4}, {}, {}}, new int[] {1, 1, 4, 1}, new int[][] {{0, 6}, {}, {2, 1}}, 1, "Cactus Potter"),
-			new Factory(new int[][] {{0, 12}, {0, 1}, {}}, new int[] {1, 5, 4, 3}, new int[][] {{0, 15}, {5, 1}, {}}, 2, "Hunter"),
+			new Factory(new int[][] {{0, 12}, {0, 1}, {}}, new int[] {1, 5, 4, 3}, new int[][] {{0, 15}, {4, 1}, {}}, 2, "Hunter"),
 			new Factory(new int[][] {{0, 10}, {2, 1}, {}}, new int[] {1, 7, 4, 5}, new int[][] {{0, 8, 3, 4}, {2, 1}, {}}, 2, "Shark Trapper"),
 			new Factory(new int[][] {{0, 10, 2, 1}, {}, {}}, new int[] {3, 4}, new int[][] {{0, 8, 3, 8, 5, 2}, {1, 1}, {}}, 2, "Jeweler"),
-			new Factory(new int[][] {{0, 5, 2, 3}, {}, {1, 2}}, new int[] {5, 5}, new int[][] {{0, 25, 3, 10}, {5, 1}, {}}, 1, "Iron Smelter"),
-			new Factory(new int[][] {{0, 6, 2, 4}, {}, {2, 2}}, new int[] {5, 8}, new int[][] {{0, 28, 3, 15}, {5, 1}, {}}, 1, "Copper Mine"),
-			new Factory(new int[][] {{0, 8, 2, 5, 5, 1}, {}, {3, 2}}, new int[] {6, 15}, new int[][] {{0, 30, 3, 30, 5, 10}, {5, 1}, {}}, 1, "Ammunition Factory"),
-			new Factory(new int[][] {{0, 10, 2, 6, 5, 1}, {}, {4, 2}}, new int[] {6, 25}, new int[][] {{0, 35, 3, 35, 5, 12}, {5, 1}, {}}, 2, "Explosives Factory"),
-			new Factory(new int[][] {{0, 10, 2, 8}, {}, {7, 1}}, new int[] {7, 6}, new int[][] {{0, 32, 3, 22, 5, 15}, {5, 1}, {}}, 2, "Petroleum Refinery"),
-			new Factory(new int[][] {{0, 10, 2, 8}, {}, {8, 1}}, new int[] {7, 6}, new int[][] {{0, 32, 3, 24, 5, 14}, {5, 1}, {}}, 2, "Crude Oil Refinery"),
-			new Factory(new int[][] {{0, 40, 2, 12}, {}, {9, 1}}, new int[] {8, 4}, new int[][] {{0, 100, 3, 150, 5, 60}, {5, 2}, {}}, 1, "Nuclear Reactor"),
-			new Factory(new int[][] {{0, 25, 9, 1}, {}, {}}, new int[] {2, 50}, new int[][] {{0, 65, 3, 100, 5, 50}, {5, 2}, {}}, 1, "Nuclear Power Plant"),
+			new Factory(new int[][] {{0, 5, 2, 3}, {}, {1, 2}}, new int[] {5, 5}, new int[][] {{0, 25, 3, 10}, {4, 1}, {}}, 1, "Iron Smelter"),
+			new Factory(new int[][] {{0, 6, 2, 4}, {}, {2, 2}}, new int[] {5, 8}, new int[][] {{0, 28, 3, 15}, {4, 1}, {}}, 1, "Copper Mine"),
+			new Factory(new int[][] {{0, 8, 2, 5, 5, 1}, {}, {3, 2}}, new int[] {6, 15}, new int[][] {{0, 30, 3, 30, 5, 10}, {4, 1}, {}}, 1, "Ammunition Factory"),
+			new Factory(new int[][] {{0, 10, 2, 6, 5, 1}, {}, {4, 2}}, new int[] {6, 25}, new int[][] {{0, 35, 3, 35, 5, 12}, {4, 1}, {}}, 2, "Explosives Factory"),
+			new Factory(new int[][] {{0, 10, 2, 8}, {}, {7, 1}}, new int[] {7, 6}, new int[][] {{0, 32, 3, 22, 5, 15}, {4, 1}, {}}, 2, "Petroleum Refinery"),
+			new Factory(new int[][] {{0, 10, 2, 8}, {}, {8, 1}}, new int[] {7, 6}, new int[][] {{0, 32, 3, 24, 5, 14}, {4, 1}, {}}, 2, "Crude Oil Refinery"),
+			new Factory(new int[][] {{0, 40, 2, 12}, {}, {9, 1}}, new int[] {8, 4}, new int[][] {{0, 100, 3, 150, 5, 60}, {4, 2}, {}}, 1, "Nuclear Reactor"),
+			new Factory(new int[][] {{0, 25, 9, 1}, {}, {}}, new int[] {2, 50}, new int[][] {{0, 65, 3, 100, 5, 50}, {4, 2}, {}}, 1, "Nuclear Power Plant")
 	};
+	int[] factories = new int[factory_templates.length];
+	int[] factories_lastCollected = new int[factory_templates.length];
 	
 	// ALL COMMANDS
 		
@@ -112,10 +114,238 @@ public class DiegoLand {
 	void cmd_constructf() {
 		
 		System.out.println("CONSTRUCT FACTORIES");
-		int last;
+		int last = 0;
 		if (getTier() == 1) {
 			
 			last = 8;
+			
+		} else if (getTier() == 2) {
+			
+			last = 16;
+			
+		} else if (getTier() == 3) {
+			
+			last = 18;
+			
+		} else if (getTier() <= 5) {
+			
+			last = 20;
+			
+		} else if (getTier() <= 7) {
+			
+			last = 22;
+			
+		}
+		for (int i = 0; i < last; i++) {
+			
+			System.out.print((i + 1) + ") " + factory_templates[i].name + "  ");
+			if ((i + 1) % 3 == 0) {
+				
+				System.out.println();
+				
+			}
+			
+		}
+		System.out.println();
+		System.out.print("Type # to view info/buy, 0 to cancel: ");
+		int index = scan.nextInt();
+		if (index >= 1 && index <= last) {
+			
+			String _input = "";
+			String _output = "";
+			String _cost = "";
+			// _input
+			for (int i = 0; i < 3; i++) {
+				
+				if (i == 0) {
+					
+					for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+						
+						_input += factory_templates[index - 1].input[i][j + 1] + " " + rsc_names[factory_templates[index - 1].input[i][j]] + " ";
+						
+					}
+					
+				}
+				if (i == 1 && factory_templates[index - 1].input[1].length != 0) {
+					
+					for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+						
+						_input += factory_templates[index - 1].input[i][j + 1] + " " + names_fauna[factory_templates[index - 1].input[i][j]] + " ";
+						
+					}
+					
+				}
+				if (i == 2 && factory_templates[index - 1].input[2].length != 0) {
+					
+					for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+						
+						_input += factory_templates[index - 1].input[i][j + 1] + " " + names_mined[factory_templates[index - 1].input[i][j]] + " ";
+						
+					}
+					
+				}
+				
+			}
+			// _output
+			for (int i = 0; i < factory_templates[index - 1].output.length; i += 2) {
+				
+				_output += factory_templates[index - 1].output[i + 1] + " " + rsc_names[factory_templates[index - 1].output[i]] + " ";
+				
+			}
+			//_cost
+			for (int i = 0; i < 3; i++) {
+				
+				if (i == 0) {
+					
+					for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
+						
+						_cost += factory_templates[index - 1].cost[i][j + 1] + " " + rsc_names[factory_templates[index - 1].cost[i][j]] + " ";
+						
+					}
+					
+				}
+				if (i == 1 && factory_templates[index - 1].cost[1].length != 0) {
+					
+					for (int j = 0; j < factory_templates[index - 1].cost[1].length; j += 2) {
+					
+						_cost += factory_templates[index - 1].cost[i][j + 1] + " " + names_land[factory_templates[index - 1].cost[i][j]] + " ";
+						
+					}
+					
+				}
+				if (i == 2 && factory_templates[index - 1].cost[2].length != 0) {
+					
+					for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
+						
+						_cost += factory_templates[index - 1].cost[i][j + 1] + " " + names_flora[factory_templates[index - 1].cost[i][j]] + " ";
+						
+					}
+					
+				}
+				
+			}
+			System.out.println(factory_templates[index - 1].name + ": " + _input + "-> " + _output + "(Time: " + factory_templates[index - 1].time + " day(s))");
+			System.out.println(_cost + "to construct; you have " + factories[index - 1] + " " + factory_templates[index - 1].name + " already");
+			System.out.print("Enter quantity to build, 0 to cancel: ");
+			int quantity = scan.nextInt();
+			boolean valid = true;
+			String used = "";
+			// valid, used
+			if (quantity < 1) {
+				
+				System.out.println("CONSTRUCTF cancelled");
+				
+			} else {
+			
+				for (int i = 0; i < 3; i++) {
+				
+					if (i == 0) {
+						
+						for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
+							
+							if (rsc[factory_templates[index - 1].cost[i][j]] < factory_templates[index - 1].cost[i][j + 1] * quantity) {
+								
+								valid = false;
+								
+							} else {
+								
+								used += (factory_templates[index - 1].cost[i][j + 1] * quantity) + " " + rsc_names[factory_templates[index - 1].cost[i][j]] + " ";
+								
+							}
+							
+						}
+						
+					}
+					if (i == 1 && factory_templates[index - 1].cost[1].length != 0) {
+						
+						for (int j = 0; j < factory_templates[index - 1].cost[1].length; j += 2) {
+						
+							if (rsc_land[factory_templates[index - 1].cost[i][j]] < factory_templates[index - 1].cost[i][j + 1] * quantity) {
+								
+								valid = false;
+								
+							} else {
+								
+								used += (factory_templates[index - 1].cost[i][j + 1] * quantity) + " " + names_land[factory_templates[index - 1].cost[i][j]] + " ";
+								
+							}
+							
+						}
+						
+					}
+					if (i == 2 && factory_templates[index - 1].cost[2].length != 0) {
+						
+						for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
+							
+							if (rsc_flora[factory_templates[index - 1].cost[i][j]] < factory_templates[index - 1].cost[i][j + 1] * quantity) {
+								
+								valid = false;
+								
+							} else {
+								
+								used += (factory_templates[index - 1].cost[i][j + 1] * quantity) + " " + names_flora[factory_templates[index - 1].cost[i][j]] + " ";
+								
+							}
+							
+						}
+						
+					}
+				
+				}
+				
+				if (!valid) {
+					
+					System.out.println("You don't have enough resources");
+					System.out.println("CONSTRUCTF cancelled");
+					
+				} else {
+					
+					System.out.println("Bought " + quantity + " " + factory_templates[index - 1].name + " for " + used);
+					String left = "";
+					for (int i = 0; i < 3; i++) {
+						
+						if (i == 0) {
+							
+							for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
+								
+								rsc[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1];
+								left += rsc[factory_templates[index - 1].cost[i][j]] + " " + rsc_names[factory_templates[index - 1].cost[i][j]] + " ";
+								
+							}
+							
+						}
+						if (i == 1 && factory_templates[index - 1].cost[1].length != 0) {
+							
+							for (int j = 0; j < factory_templates[index - 1].cost[1].length; j += 2) {
+							
+								rsc_land[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1];
+								left += rsc_land[factory_templates[index - 1].cost[i][j]] + " " + names_land[factory_templates[index - 1].cost[i][j]] + " ";
+								
+							}
+							
+						}
+						if (i == 2 && factory_templates[index - 1].cost[2].length != 0) {
+							
+							for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
+								
+								rsc_flora[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1];
+								left += rsc_flora[factory_templates[index - 1].cost[i][j]] + " " + names_flora[factory_templates[index - 1].cost[i][j]] + " ";
+								
+							}
+							
+						}
+					
+					}
+					System.out.println("You now have " + left);
+					factories[index - 1]++;
+					
+				}
+				
+			}
+			
+		} else {
+			
+			System.out.println("CONSTRUCTF cancelled");
 			
 		}
 		
@@ -138,6 +368,9 @@ public class DiegoLand {
 		case "CONSTRUCTF":
 			cmd_constructf();
 			break;
+			
+		default:
+			System.out.println("Invalid command entered, run HELP to view a list of commands");
 		
 		}
 		
@@ -163,7 +396,7 @@ public class DiegoLand {
 				
 			}
 			
-			for (time = 0; time < apd; ) {
+			for (time = 0; time < apd;) {
 				
 				System.out.print("Command: ");
 				String command = scan.next();
@@ -179,6 +412,7 @@ public class DiegoLand {
 			System.out.println("***");
 			System.out.println();
 			day++;
+
 			try {
 				SaveData(population, day, time, apd, rsc, rsc_land, rsc_fauna, rsc_flora, rsc_mined);
 			} catch (Exception e) {
