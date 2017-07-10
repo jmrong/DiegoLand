@@ -412,6 +412,7 @@ public class DiegoLand {
 			System.out.println("***");
 			System.out.println();
 			day++;
+			// ANISH WORK ON PARAMETERS LATER, COMMENTED UNTIL FINISHED SaveData();
 			
 		}
 		
@@ -593,7 +594,7 @@ public class DiegoLand {
 	public static void SaveData(int population, int day, int time, int apd, 
 			int[] rsc, int[] rsc_land, int[] rsc_fauna, int[] rsc_flora, int[] rsc_mined)  throws Exception
 	{
-		String csvFile = "C:\\Users\\Raman\\Desktop\\save_file.csv";
+		String csvFile = "/Diego Land/src/save.csv";
 		Saving save = new Saving();
 		
 		FileWriter writer = new FileWriter(csvFile);
