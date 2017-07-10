@@ -338,6 +338,8 @@ public class DiegoLand {
 					}
 					System.out.println("You now have " + left);
 					factories[index - 1]++;
+					factories_lastCollected[index - 1] = -1;
+					time++;
 					
 				}
 				
@@ -346,6 +348,17 @@ public class DiegoLand {
 		} else {
 			
 			System.out.println("CONSTRUCTF cancelled");
+			
+		}
+		
+	}
+	
+	void cmd_factories() {
+		
+		System.out.println("FACTORIES");
+		for (int i = 0; i < factories.length; i++) {
+			
+			System.out.println((i + 1) + ") " + factory_templates[i].name + " (" + factories[i] + ")");
 			
 		}
 		
@@ -367,6 +380,10 @@ public class DiegoLand {
 			
 		case "CONSTRUCTF":
 			cmd_constructf();
+			break;
+			
+		case "FACTORIES":
+			cmd_factories();
 			break;
 			
 		default:
@@ -406,6 +423,15 @@ public class DiegoLand {
 				
 			}
 			
+			for (int i = 0; i < factories.length; i++) {
+				
+				if (factories[i] != 0) {
+					
+					factories_lastCollected[i]++;
+					
+				}
+				
+			}
 			scan.nextLine();
 			System.out.println("Day is over! Press ENTER to continue to DAY " + (day + 1) + "...");
 			scan.nextLine();
