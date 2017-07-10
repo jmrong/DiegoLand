@@ -179,7 +179,12 @@ public class DiegoLand {
 			System.out.println("***");
 			System.out.println();
 			day++;
-			SaveData();
+			try {
+				SaveData(population, day, time, apd, rsc, rsc_land, rsc_fauna, rsc_flora, rsc_mined);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 		}
 		
