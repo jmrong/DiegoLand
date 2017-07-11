@@ -691,6 +691,9 @@ public class DiegoLand {
 		save.Save(rsc_fauna, writer);
 		save.Save(rsc_flora, writer);
 		save.Save(rsc_mined, writer);
+		
+		save.Save(factories, writer);
+		save.Save(factories_lastCollected, writer);
 
 		writer.flush();
         writer.close();
