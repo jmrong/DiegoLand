@@ -32,3 +32,22 @@ public class TestingSpace {
 	}
 	
 }
+
+/*void cmd_erase_data() throws IOException  // May or may not work, need to test
+{
+	String csvFile = "save.csv";
+	Saving save = new Saving();
+
+	FileWriter writer = new FileWriter(csvFile);
+	
+	population = 20;
+	day = 1;
+	time = 0;
+	apd = 4;
+	int[] rsc = {5000, 200, 50, 40, 20, 20, 0, 0, 0};
+
+	
+	writer.flush();
+    writer.close();
+}
+*/
