@@ -29,5 +29,12 @@ public class Saving {
 	
 	}
 	
+	public void Save(String a, FileWriter writer) throws IOException
+	{
+		String[] arr = {a};
+		
+		CSVUtils.writeLine(writer, Arrays.asList(arr));
+	}
+	
 
 }

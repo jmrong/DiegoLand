@@ -768,6 +768,19 @@ public class DiegoLand {
 		}
 	}
 	
+	void cmd_clear_data() throws IOException  // May or may not work, need to test
+	{
+		String csvFile = "save.csv";
+		Saving save = new Saving();
+
+		FileWriter writer = new FileWriter(csvFile);
+
+		save.Save("", writer);
+		
+		writer.flush();
+        writer.close();
+	}
+	
 	
 		
 	// COMMAND HANDLER
@@ -793,7 +806,12 @@ public class DiegoLand {
 			break;
 			
 		case "SAVEDATA":
-			cmd_save_data();
+			try {
+				cmd_save_data();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 			
 		case "LOADDATA":
