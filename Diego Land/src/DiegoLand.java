@@ -308,7 +308,7 @@ public class DiegoLand {
 							
 							for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
 								
-								rsc[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1];
+								rsc[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1] * quantity;
 								left += rsc[factory_templates[index - 1].cost[i][j]] + " " + rsc_names[factory_templates[index - 1].cost[i][j]] + " ";
 								
 							}
@@ -318,7 +318,7 @@ public class DiegoLand {
 							
 							for (int j = 0; j < factory_templates[index - 1].cost[1].length; j += 2) {
 							
-								rsc_land[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1];
+								rsc_land[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1] * quantity;
 								left += rsc_land[factory_templates[index - 1].cost[i][j]] + " " + names_land[factory_templates[index - 1].cost[i][j]] + " ";
 								
 							}
@@ -328,7 +328,7 @@ public class DiegoLand {
 							
 							for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
 								
-								rsc_flora[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1];
+								rsc_flora[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1] * quantity;
 								left += rsc_flora[factory_templates[index - 1].cost[i][j]] + " " + names_flora[factory_templates[index - 1].cost[i][j]] + " ";
 								
 							}
@@ -356,9 +356,93 @@ public class DiegoLand {
 	void cmd_factories() {
 		
 		System.out.println("FACTORIES");
+		boolean empty = true;
+		int last = 0;
+		int[] _factories = new int[factories.length];
 		for (int i = 0; i < factories.length; i++) {
 			
-			System.out.println((i + 1) + ") " + factory_templates[i].name + " (" + factories[i] + ")");
+			if (factories[i] != 0) {
+				
+				System.out.println((i + 1) + ") " + factory_templates[i].name + " x " + factories[i]);
+				_factories[last] = i;
+				last++;
+				empty = false;
+				
+			}
+			
+		}
+		if (empty) {
+			
+			System.out.println("No factories yet! Use CONSTRUCTF to construct factories");
+			
+		} else {
+			
+			System.out.print("Type # to view/collect, 0 to cancel: ");
+			int index = scan.nextInt();
+			if (index < 1 || index > last) {
+				
+				System.out.println("FACTORIES cancelled");
+				
+			} else {
+				
+				String _input = "";
+				String _output = "";
+				for (int i = 0; i < 3; i++) {
+					
+					if (i == 0) {
+						
+						for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+							
+							_input += factory_templates[index - 1].input[i][j + 1] + " " + rsc_names[factory_templates[index - 1].input[i][j]] + " ";
+							
+						}
+						
+					}
+					if (i == 1 && factory_templates[index - 1].input[1].length != 0) {
+						
+						for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+							
+							_input += factory_templates[index - 1].input[i][j + 1] + " " + names_fauna[factory_templates[index - 1].input[i][j]] + " ";
+							
+						}
+						
+					}
+					if (i == 2 && factory_templates[index - 1].input[2].length != 0) {
+						
+						for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+							
+							_input += factory_templates[index - 1].input[i][j + 1] + " " + names_mined[factory_templates[index - 1].input[i][j]] + " ";
+							
+						}
+						
+					}
+					
+				}
+				if (factory_templates[index - 1].cost[2].length != 0) {
+					
+					_input += "(";
+					for (int j = 0; j < factory_templates[index - 1].cost[2].length; j += 2) {
+						
+						_input += factory_templates[index - 1].cost[2][j + 1] + " " + names_flora[factory_templates[index - 1].cost[2][j]];
+						if (j + 2 < factory_templates[index - 1].cost[2].length) {
+							
+							_input += " ";
+							
+						}
+						
+					}
+					_input += ") ";
+					
+				}
+				
+				for (int i = 0; i < factory_templates[index - 1].output.length; i += 2) {
+					
+					_output += factory_templates[index - 1].output[i + 1] + " " + rsc_names[factory_templates[index - 1].output[i]] + " ";
+					
+				}
+				System.out.println(factory_templates[_factories[index - 1]].name + " x " + factories[index - 1] + ": " + _input + "-> " + _output);
+				
+			}
 			
 		}
 		
