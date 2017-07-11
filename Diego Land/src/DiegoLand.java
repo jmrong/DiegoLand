@@ -337,7 +337,7 @@ public class DiegoLand {
 					
 					}
 					System.out.println("You now have " + left);
-					factories[index - 1]++;
+					factories[index - 1] += quantity;
 					factories_lastCollected[index - 1] = -1;
 					time++;
 					
@@ -393,7 +393,7 @@ public class DiegoLand {
 						
 						for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
 							
-							_input += factory_templates[index - 1].input[i][j + 1] + " " + rsc_names[factory_templates[index - 1].input[i][j]] + " ";
+							_input += factory_templates[index - 1].input[i][j + 1] * factories[index - 1] + " " + rsc_names[factory_templates[index - 1].input[i][j]] + " ";
 							
 						}
 						
@@ -402,7 +402,7 @@ public class DiegoLand {
 						
 						for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
 							
-							_input += factory_templates[index - 1].input[i][j + 1] + " " + names_fauna[factory_templates[index - 1].input[i][j]] + " ";
+							_input += factory_templates[index - 1].input[i][j + 1] * factories[index - 1] + " " + names_fauna[factory_templates[index - 1].input[i][j]] + " ";
 							
 						}
 						
@@ -411,7 +411,7 @@ public class DiegoLand {
 						
 						for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
 							
-							_input += factory_templates[index - 1].input[i][j + 1] + " " + names_mined[factory_templates[index - 1].input[i][j]] + " ";
+							_input += factory_templates[index - 1].input[i][j + 1] * factories[index - 1] + " " + names_mined[factory_templates[index - 1].input[i][j]] + " ";
 							
 						}
 						
@@ -423,7 +423,7 @@ public class DiegoLand {
 					_input += "(";
 					for (int j = 0; j < factory_templates[index - 1].cost[2].length; j += 2) {
 						
-						_input += factory_templates[index - 1].cost[2][j + 1] + " " + names_flora[factory_templates[index - 1].cost[2][j]];
+						_input += factory_templates[index - 1].cost[2][j + 1] * factories[index - 1] + " " + names_flora[factory_templates[index - 1].cost[2][j]];
 						if (j + 2 < factory_templates[index - 1].cost[2].length) {
 							
 							_input += " ";
@@ -437,10 +437,20 @@ public class DiegoLand {
 				
 				for (int i = 0; i < factory_templates[index - 1].output.length; i += 2) {
 					
-					_output += factory_templates[index - 1].output[i + 1] + " " + rsc_names[factory_templates[index - 1].output[i]] + " ";
+					_output += factory_templates[index - 1].output[i + 1] * factories[index - 1] + " " + rsc_names[factory_templates[index - 1].output[i]] + " ";
 					
 				}
+				
 				System.out.println(factory_templates[_factories[index - 1]].name + " x " + factories[index - 1] + ": " + _input + "-> " + _output);
+				if (factories_lastCollected[index - 1] == -1) {
+					
+					System.out.println("Factory under construction, collection unavailable...");
+					
+				} else {
+					
+					System.out.println(factories_lastCollected[index - 1] + " day(s) since last collection -> " + (factories_lastCollected[index - 1] / factory_templates[index - 1].time) + " x output (" + factory_templates[index - 1].time + " day(s)/output)");
+					
+				}
 				
 			}
 			
@@ -468,6 +478,12 @@ public class DiegoLand {
 			
 		case "FACTORIES":
 			cmd_factories();
+			break;
+			
+		case "PASS":
+			System.out.println("Day passed!");
+			System.out.println("***");
+			time = apd;
 			break;
 			
 		default:
@@ -523,12 +539,12 @@ public class DiegoLand {
 			System.out.println();
 			day++;
 
-			try {
+			/*try {
 				SaveData(population, day, time, apd, rsc, rsc_land, rsc_fauna, rsc_flora, rsc_mined);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 			
 		}
 		
