@@ -768,19 +768,7 @@ public class DiegoLand {
 		}
 	}
 	
-	void cmd_clear_data() throws IOException  // May or may not work, need to test
-	{
-		String csvFile = "save.csv";
-		Saving save = new Saving();
 
-		FileWriter writer = new FileWriter(csvFile);
-
-		save.Save("", writer);
-		
-		writer.flush();
-        writer.close();
-	}
-	
 	
 		
 	// COMMAND HANDLER
