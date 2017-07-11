@@ -43,25 +43,25 @@ public class DiegoLand {
 
 	// RESOURCES
 
-	int[] rsc = {20000, 500, 100, 150, 20, 50, 30, 5, 0};
+	int[] rsc = {5000, 200, 50, 40, 20, 20, 0, 0, 0};
 	String[] rsc_names = {"Money", "Food", "Power", "Building Materials", "Consumer Goods", "Metal", "Ammunition", "Fuel", "Uranium"};
 
-	// NATURAL
-
-	int[] rsc_land = new int[4 + 1];
-	int[] rsc_fauna = new int[3 + 1];
-	int[] rsc_flora = new int[4 + 1];
-	int[] rsc_mined = new int[9 + 1];
-
-	String[] names_land = {"Forest", "Desert", "Lake", "Grassland", "Cleared Land"};
-	String[] names_fauna = {"Bear", "Salmon", "Shark", "Cow"};
-	String[] names_flora = {"Berry Bush", "Oak Tree", "Cactus", "Coral", "Apple Tree"};
-	String[] names_mined = {"Coal", "Iron", "Copper", "Sulfur", "Saltpeter", "Clay", "Sandstone", "Petroleum", "Crude Oil", "Uraninite"};
-
-	double[] stats_land = {0.45, 0.45 + 0.17, 0.45 + 0.17 + 0.2, 0.45 + 0.17 + 0.2 + 0.19};
-	double[][] stats_fauna = {{0, 0.2, 1, 4, 3, 0.08, 1, 3}, {2, 0.6, 2, 15}, {2, 0.2, 1, 2}, {3, 0.5, 3, 9}};
-	double[][] stats_flora = {{0, 0.75, 1, 6, 3, 0.08, 1, 3}, {0, 0.75, 2, 8, 3, 0.45, 1, 5}, {1, 0.7, 1, 3}, {2, 0.35, 3, 10}, {0, 0.3, 1, 5, 3, 0.45, 1, 5}};
-	double[][] stats_mined = {{0, 0.6, 3, 20, 1, 0.65, 3, 20, 2, 0.1, 2, 20, 3, 0.35, 3, 12}, {0, 0.3, 2, 15, 1, 0.65, 1, 18, 3, 0.3, 1, 10}, {0, 0.25, 3, 12, 1, 0.35, 3, 12, 3, 0.1, 2, 8}, {0, 0.4, 5, 35, 1, 0.55, 5, 45, 2, 0.3, 5, 35, 3, 0.1, 5, 30}, {0, 0.1, 3, 8, 1, 0.5, 5, 45, 2, 0.05, 3, 14, 3, 0.3, 3, 10}, {0, 0.05, 3, 30, 1, 0.2, 3, 40, 2, 0.5, 3, 12, 3, 0.05, 3, 20}, {1, 0.9, 3, 35}, {1, 0.3, 3, 18, 2, 0.3, 1, 25}, {0, 0.3, 3, 20, 3, 0.1, 3, 15}, {0, 0.03, 1, 5, 1, 0.08, 1, 8, 2, 0.01, 1, 4, 3, 0.02, 1, 5}};
+		// NATURAL
+		
+		int[] rsc_land = {0, 0, 0, 0, 20};
+		int[] rsc_fauna = new int[3 + 1];
+		int[] rsc_flora = new int[4 + 1];
+		int[] rsc_mined = new int[9 + 1];
+		
+		String[] names_land = {"Forest", "Desert", "Lake", "Grassland", "Cleared Land"};
+		String[] names_fauna = {"Bear", "Salmon", "Shark", "Cow"};
+		String[] names_flora = {"Berry Bush", "Oak Tree", "Cactus", "Coral", "Apple Tree"};
+		String[] names_mined = {"Coal", "Iron", "Copper", "Sulfur", "Saltpeter", "Clay", "Sandstone", "Petroleum", "Crude Oil", "Uraninite"};
+		
+		double[] stats_land = {0.45, 0.45 + 0.17, 0.45 + 0.17 + 0.2, 0.45 + 0.17 + 0.2 + 0.19};
+		double[][] stats_fauna = {{0, 0.2, 1, 4, 3, 0.08, 1, 3}, {2, 0.6, 2, 15}, {2, 0.2, 1, 2}, {3, 0.5, 3, 9}};
+		double[][] stats_flora = {{0, 0.75, 1, 6, 3, 0.08, 1, 3}, {0, 0.75, 2, 8, 3, 0.45, 1, 5}, {1, 0.7, 1, 3}, {2, 0.35, 3, 10}, {0, 0.3, 1, 5, 3, 0.45, 1, 5}};
+		double[][] stats_mined = {{0, 0.6, 3, 20, 1, 0.65, 3, 20, 2, 0.1, 2, 20, 3, 0.35, 3, 12}, {0, 0.3, 2, 15, 1, 0.65, 1, 18, 3, 0.3, 1, 10}, {0, 0.25, 3, 12, 1, 0.35, 3, 12, 3, 0.1, 2, 8}, {0, 0.4, 5, 35, 1, 0.55, 5, 45, 2, 0.3, 5, 35, 3, 0.1, 5, 30}, {0, 0.1, 3, 8, 1, 0.5, 5, 45, 2, 0.05, 3, 14, 3, 0.3, 3, 10}, {0, 0.05, 3, 30, 1, 0.2, 3, 40, 2, 0.5, 3, 12, 3, 0.05, 3, 20}, {1, 0.9, 3, 35}, {1, 0.3, 3, 18, 2, 0.3, 1, 25}, {0, 0.3, 3, 20, 3, 0.1, 3, 15}, {0, 0.03, 1, 5, 1, 0.08, 1, 8, 2, 0.01, 1, 4, 3, 0.02, 1, 5}};
 
 	// FACTORIES
 	Factory[] factory_templates = {
@@ -311,7 +311,7 @@ public class DiegoLand {
 
 							for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
 
-								rsc[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1];
+								rsc[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1] * quantity;
 								left += rsc[factory_templates[index - 1].cost[i][j]] + " " + rsc_names[factory_templates[index - 1].cost[i][j]] + " ";
 
 							}
@@ -320,8 +320,8 @@ public class DiegoLand {
 						if (i == 1 && factory_templates[index - 1].cost[1].length != 0) {
 
 							for (int j = 0; j < factory_templates[index - 1].cost[1].length; j += 2) {
-
-								rsc_land[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1];
+							
+								rsc_land[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1] * quantity;
 								left += rsc_land[factory_templates[index - 1].cost[i][j]] + " " + names_land[factory_templates[index - 1].cost[i][j]] + " ";
 
 							}
@@ -330,8 +330,8 @@ public class DiegoLand {
 						if (i == 2 && factory_templates[index - 1].cost[2].length != 0) {
 
 							for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
-
-								rsc_flora[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1];
+								
+								rsc_flora[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].cost[i][j + 1] * quantity;
 								left += rsc_flora[factory_templates[index - 1].cost[i][j]] + " " + names_flora[factory_templates[index - 1].cost[i][j]] + " ";
 
 							}
@@ -340,8 +340,10 @@ public class DiegoLand {
 
 					}
 					System.out.println("You now have " + left);
-					factories[index - 1]++;
-
+					factories[index - 1] += quantity;
+					factories_lastCollected[index - 1] = -1;
+					time++;
+					
 				}
 
 			}
@@ -354,12 +356,330 @@ public class DiegoLand {
 
 	}
 
+	void cmd_factories() {
+		
+		System.out.println("FACTORIES");
+		boolean empty = true;
+		int last = 0;
+		int[] _factories = new int[factories.length];
+		for (int i = 0; i < factories.length; i++) {
+			
+			if (factories[i] != 0) {
+				
+				String ready = "";
+				if (factories_lastCollected[i] / factory_templates[i].time > 0) {
+					
+					ready = " (" + (factories_lastCollected[i] / factory_templates[i].time) + " output(s) available)";
+					
+				}
+				System.out.println((last + 1) + ") " + factory_templates[i].name + " x " + factories[i] + ready);
+				_factories[last] = i;
+				last++;
+				empty = false;
+				
+			}
+			
+		}
+		if (empty) {
+			
+			System.out.println("No factories yet! Use CONSTRUCTF to construct factories");
+			
+		} else {
+			
+			System.out.print("Type # to view/collect, 0 to cancel: ");
+			int index = scan.nextInt();
+			if (index < 1 || index > last) {
+				
+				System.out.println("FACTORIES cancelled");
+				
+			} else {
+				// info
+				String _input = "";
+				String _output = "";
+				for (int i = 0; i < 3; i++) {
+					
+					if (i == 0) {
+						
+						for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+							
+							_input += factory_templates[index - 1].input[i][j + 1] * factories[index - 1] + " " + rsc_names[factory_templates[index - 1].input[i][j]] + " ";
+							
+						}
+						
+					}
+					if (i == 1 && factory_templates[index - 1].input[1].length != 0) {
+						
+						for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+							
+							_input += factory_templates[index - 1].input[i][j + 1] * factories[index - 1] + " " + names_fauna[factory_templates[index - 1].input[i][j]] + " ";
+							
+						}
+						
+					}
+					if (i == 2 && factory_templates[index - 1].input[2].length != 0) {
+						
+						for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+							
+							_input += factory_templates[index - 1].input[i][j + 1] * factories[index - 1] + " " + names_mined[factory_templates[index - 1].input[i][j]] + " ";
+							
+						}
+						
+					}
+					
+				}
+				if (factory_templates[index - 1].cost[2].length != 0) {
+					
+					_input += "(";
+					for (int j = 0; j < factory_templates[index - 1].cost[2].length; j += 2) {
+						
+						_input += factory_templates[index - 1].cost[2][j + 1] * factories[index - 1] + " " + names_flora[factory_templates[index - 1].cost[2][j]];
+						if (j + 2 < factory_templates[index - 1].cost[2].length) {
+							
+							_input += " ";
+							
+						}
+						
+					}
+					_input += ") ";
+					
+				}
+				
+				for (int i = 0; i < factory_templates[index - 1].output.length; i += 2) {
+					
+					_output += factory_templates[index - 1].output[i + 1] * factories[index - 1] + " " + rsc_names[factory_templates[index - 1].output[i]] + " ";
+					
+				}
+				
+				System.out.println(factory_templates[_factories[index - 1]].name + " x " + factories[index - 1] + ": " + _input + "-> " + _output + "(" + factory_templates[index - 1].time + " day(s)/output)");
+				if (factories_lastCollected[index - 1] == -1) {
+					
+					System.out.println("Factory under construction, collection unavailable...");
+					
+				} else {
+					// max output
+					String max = "";
+					if (factories_lastCollected[index - 1] / factory_templates[index - 1].time >= 1) {
+						
+						for (int i = 0; i < 3; i++) {
+							
+							if (i == 0) {
+								
+								for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+									
+									max += (factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * (factories_lastCollected[index - 1] / factory_templates[index - 1].time)) + " " + rsc_names[factory_templates[index - 1].input[i][j]];
+									if (j + 2 >= factory_templates[index - 1].input[i].length && factory_templates[index - 1].input[1].length == 0 && factory_templates[index - 1].input[2].length == 0) {
+										
+										max += "->";
+										
+									} else {
+										
+										max += " ";
+										
+									}
+									
+								}
+								
+							}
+							if (i == 1 && factory_templates[index - 1].input[1].length != 0) {
+								
+								for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+									
+									max += (factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * (factories_lastCollected[index - 1] / factory_templates[index - 1].time)) + " " + names_fauna[factory_templates[index - 1].input[i][j]] + " ";
+									if (j + 2 >= factory_templates[index - 1].input[i].length && factory_templates[index - 1].input[2].length == 0) {
+										
+										max += "->";
+										
+									} else {
+										
+										max += " ";
+										
+									}
+									
+								}
+								
+							}
+							if (i == 2 && factory_templates[index - 1].input[2].length != 0) {
+								
+								for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+									
+									max += (factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * (factories_lastCollected[index - 1] / factory_templates[index - 1].time)) + " " + names_mined[factory_templates[index - 1].input[i][j]] + " ";
+									if (j + 2 >= factory_templates[index - 1].input[i].length) {
+										
+										max += "->";
+										
+									} else {
+										
+										max += " ";
+										
+									}
+									
+								}
+								
+							}
+							
+						}
+						for (int i = 0; i < factory_templates[index - 1].output.length; i += 2) {
+							
+							max += " " + (factory_templates[index - 1].output[i + 1] * factories[index - 1] * (factories_lastCollected[index - 1]) / factory_templates[index - 1].time) + " " + rsc_names[factory_templates[index - 1].output[i]];
+							
+						}
+						
+					}
+					if (max != "") {
+						
+						System.out.println(factories_lastCollected[index - 1] + " day(s) since last collection -> max. " + (factories_lastCollected[index - 1] / factory_templates[index - 1].time) + " x output (" + max + ")");
+					
+					} else {
+						
+						System.out.println(factories_lastCollected[index - 1] + " day(s) since last collection -> max. " + (factories_lastCollected[index - 1] / factory_templates[index - 1].time) + " x output");
+						
+					}
+					System.out.print("Enter positive # to collect # of outputs from factory, negative # to sell # of factories, 0 to cancel: ");
+					int choice = scan.nextInt();
+					if (choice == 0) {
+						
+						System.out.println("FACTORIES cancelled");
+						
+					} else if (choice > 0) {
+						
+						boolean valid = true;
+						for (int i = 0; i < 3 && valid; i++) {
+							
+							if (i == 0) {
+								
+								for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+									
+									if (rsc[factory_templates[index - 1].input[i][j]] - factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * (choice) < 0) {
+										
+										valid = false;
+										
+									}
+										
+								}
+								
+							}
+							if (i == 1 && factory_templates[index - 1].input[1].length != 0) {
+								
+								for (int j = 0; j < factory_templates[index - 1].input[1].length; j += 2) {
+								
+									if (rsc_fauna[factory_templates[index - 1].input[i][j]] - factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * (choice) < 0) {
+										
+										valid = false;
+										
+									}									
+								}
+								
+							}
+							if (i == 2 && factory_templates[index - 1].input[2].length != 0) {
+								
+								for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+									
+									if (rsc_mined[factory_templates[index - 1].input[i][j]] - factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * (choice) < 0) {
+										
+										valid = false;
+										
+									}
+									
+								}
+								
+							}
+						
+						}
+						if (choice > (factories_lastCollected[index - 1] / factory_templates[index - 1].time)) {
+							
+							System.out.println("You can't collect this many outputs yet");
+							
+						} else if (!valid) {
+							
+							System.out.println("You don't have enough resources");
+							
+						} else {
+							// collect
+							String left = "";
+							for (int i = 0; i < 3; i++) {
+								
+								if (i == 0) {
+									
+									for (int j = 0; j < factory_templates[index - 1].cost[i].length; j += 2) {
+										
+										rsc[factory_templates[index - 1].cost[i][j]] -= factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * choice;
+										left += rsc[factory_templates[index - 1].input[i][j]] + " " + rsc_names[factory_templates[index - 1].input[i][j]];
+										if (j + 2 < factory_templates[index - 1].input[i].length || factory_templates[index - 1].input[1].length != 0 || factory_templates[index - 1].input[2].length != 0) {
+											
+											left += " ";
+											
+										}
+										
+									}
+									
+								}
+								if (i == 1 && factory_templates[index - 1].input[1].length != 0) {
+									
+									for (int j = 0; j < factory_templates[index - 1].input[1].length; j += 2) {
+										
+										rsc_fauna[factory_templates[index - 1].input[i][j]] -= factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * choice;
+										left += rsc_fauna[factory_templates[index - 1].input[i][j]] + " " + names_fauna[factory_templates[index - 1].input[i][j]];
+										if (j + 2 < factory_templates[index - 1].input[i].length || factory_templates[index - 1].input[2].length != 0) {
+											
+											left += " ";
+											
+										}
+										
+									}
+									
+								}
+								if (i == 2 && factory_templates[index - 1].input[2].length != 0) {
+									
+									for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
+										
+										rsc_mined[factory_templates[index - 1].input[i][j]] -= factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * choice;
+										left += rsc_mined[factory_templates[index - 1].input[i][j]] + " " + names_mined[factory_templates[index - 1].input[i][j]];
+										if (j + 2 < factory_templates[index - 1].input[i].length) {
+											
+											left += " ";
+											
+										}
+										
+									}
+									
+								}
+							
+							}
+							left += " & ";
+							for (int i = 0; i < factory_templates[index - 1].output.length; i += 2) {
+								
+								rsc[factory_templates[index - 1].output[i]] += factory_templates[index - 1].output[i + 1] * factories[index - 1] * choice;
+								left += rsc[factory_templates[index - 1].output[i]] + " " + rsc_names[factory_templates[index - 1].output[i]] + " ";
+								if (i + 2 < factory_templates[index - 1].output.length) {
+									
+									left += " ";
+									
+								}
+								
+							}
+							System.out.println("Collected " + choice + " output(s) from " + factory_templates[index - 1].name + " x " + factories[index - 1]);
+							System.out.println("You now have " + left);
+							factories_lastCollected[index - 1] = 0;
+							time++;
+							
+						}
+						
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+		
 	// COMMAND HANDLER
 
 	void command(String command) {
-
-		switch (command) {
-
+		
+		switch (command.toUpperCase()) {
+		
 		case "RESOURCES":
 			cmd_resources();
 			break;
@@ -371,10 +691,17 @@ public class DiegoLand {
 		case "CONSTRUCTF":
 			cmd_constructf();
 			break;
-
-
-
-
+			
+		case "FACTORIES":
+			cmd_factories();
+			break;
+			
+		case "PASS":
+			System.out.println("Day passed!");
+			System.out.println("***");
+			time = apd;
+			break;
+			
 		default:
 			System.out.println("Invalid command entered, run HELP to view a list of commands");
 
@@ -412,13 +739,23 @@ public class DiegoLand {
 
 			}
 
+			for (int i = 0; i < factories.length; i++) {
+				
+				if (factories[i] != 0) {
+					
+					factories_lastCollected[i]++;
+					
+				}
+				
+			}
+
 			scan.nextLine();
 			System.out.println("Day is over! Press ENTER to continue to DAY " + (day + 1) + "...");
 			scan.nextLine();
 			System.out.println("***");
 			System.out.println();
 			day++;
-
+			
 		}
 
 	}
