@@ -673,6 +673,102 @@ public class DiegoLand {
 		}
 		
 	}
+	
+	void cmd_save_data() throws IOException
+	{
+		String csvFile = "save.csv";
+		Saving save = new Saving();
+
+		FileWriter writer = new FileWriter(csvFile);
+
+		save.Save(population, writer);
+		save.Save(day, writer);
+		save.Save(time, writer);
+		save.Save(apd, writer);
+
+		save.Save(rsc, writer);
+		save.Save(rsc_land, writer);
+		save.Save(rsc_fauna, writer);
+		save.Save(rsc_flora, writer);
+		save.Save(rsc_mined, writer);
+
+		writer.flush();
+        writer.close();
+	}
+	
+	void cmd_load_data()
+	{
+		String csvFile = "save.csv";
+		String line = "";
+		String cvsSplitBy = ",";
+
+		try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+			int count = 0;
+			while ((line = br.readLine()) != null) {
+				count++;
+				// use comma as separator
+				String[] data = line.split(cvsSplitBy);
+				int[] int_data = new int[data.length];
+				for(int i = 0; i < int_data.length; i++)
+				{
+					int_data[0] = Integer.parseInt(data[i]);
+				}
+
+				if(count == 1)
+				{
+					population = int_data[0];
+				}
+				else if(count == 2)
+				{
+					day = int_data[0];
+				}
+				else if(count == 3)
+				{
+					time = int_data[0];
+				}
+				else if(count == 4)
+				{
+					apd = int_data[0];
+				}
+				else if(count == 5)
+				{
+					rsc = int_data;
+				}
+				else if(count == 6)
+				{
+					rsc_land = int_data;
+				}
+				else if(count == 7)
+				{
+					rsc_fauna = int_data;
+				}
+				else if(count == 8)
+				{
+					rsc_flora = int_data;
+				}
+				else if(count == 9)
+				{
+					rsc_mined = int_data;
+				}
+				else if(count == 10)
+				{
+					factories = int_data;
+				}
+				else if(count == 11)
+				{
+					factories_lastCollected = int_data;
+				}
+
+
+
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 		
 	// COMMAND HANDLER
 
@@ -696,6 +792,14 @@ public class DiegoLand {
 			cmd_factories();
 			break;
 			
+		case "SAVEDATA":
+			cmd_save_data();
+			break;
+			
+		case "LOADDATA":
+			cmd_load_data();
+			break;
+		
 		case "PASS":
 			System.out.println("Day passed!");
 			System.out.println("***");
