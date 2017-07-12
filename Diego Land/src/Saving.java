@@ -12,7 +12,6 @@ public class Saving {
 		{
 			list[i] = arr[i]+"";
 		}
-
 		
 		CSVUtils.writeLine(writer, Arrays.asList(list));
 
