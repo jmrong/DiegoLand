@@ -773,9 +773,20 @@ public class DiegoLand {
 		}
 	}
 	
-	void cmd_create_division()
+	void cmd_create_division()  
 	{
-		Unit[][] units = {{new Unit(1, 1, 1, "Unit")}};
+		Unit[] units = new Unit[10];
+		System.out.println("This is the Division Creation Commmand, hit ENTER to get started!");
+		scan.nextLine();
+		for(int i = 0; i < 10; i++)
+		{
+			System.out.println("\nEnter type for Unit:");
+			System.out.print("Type(Infantry, Medic, Sniper): ");
+			String type = scan.nextLine();
+			units[i] = new Unit(type);
+			System.out.println("Unit succesfully added!");
+			
+		}
 		String name = "Name";
 		Division d = new Division(units, name);
 		divisions.add(d);
