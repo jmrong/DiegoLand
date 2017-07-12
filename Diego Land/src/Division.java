@@ -9,5 +9,12 @@ public class Division {
 		this.name = name;
 	}
 	
-	
+	public Unit[][] getUnits() { return units; }
+
+	public void setUnits(Unit[][] units) { this.units = units; }
+
+	public String getName() { return name; }
+
+	public void setName(String name) { this.name = name; }
+
 }

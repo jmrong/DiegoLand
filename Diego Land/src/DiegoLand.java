@@ -90,6 +90,8 @@ public class DiegoLand {
 	};
 	int[] factories = new int[factory_templates.length];
 	int[] factories_lastCollected = new int[factory_templates.length];
+	
+	List<Division> divisions = new ArrayList<Division>();
 
 	// ALL COMMANDS
 
@@ -771,9 +773,14 @@ public class DiegoLand {
 		}
 	}
 	
-
+	void cmd_create_division()
+	{
+		Unit[][] units = {{new Unit(1, 1, 1, "Unit")}};
+		String name = "Name";
+		Division d = new Division(units, name);
+		divisions.add(d);
+	}
 	
-		
 	// COMMAND HANDLER
 
 	void command(String command) {
@@ -807,6 +814,10 @@ public class DiegoLand {
 			
 		case "LOADDATA":
 			cmd_load_data();
+			break;
+			
+		case "CREATEDIVISION":
+			cmd_create_division();
 			break;
 		
 		case "PASS":
