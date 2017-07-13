@@ -43,7 +43,7 @@ public class DiegoLand {
 	String[][] names_techs = {{"Military", "Allows recruitment of powerful units"}, {"Productivity", "Increases commands per day by 1 per level"}, {"Public Happiness", "Increases happiness by +0.5 per level"}, {"Refining", "Allows processing of advanced mined resources"}, {"Population Growth", "Increase population growth by +1% per level"}};
 	int[] max_techs = {4, 3, 3, 2, 4};
 	int[][] costs_techs = {{700, 2000, 4800, 10000}, {500, 4000, 10000}, {5000, 11000, 31000}, {6000, 12000}, {4000, 9000, 13000, 28000}};
-	int[][] req_techs = {{1, 2, 3, 4}, {-1, -1, -1}, {-1, -1, -1}, {-1, 4}, {-1, -1, -1, -1}};
+	int[][] req_techs = {{1, 2, 3, 4}, {-2, -3, -4}, {-3, -5, -6}, {-4, 4}, {-2, -3, -5, -6}};
 	int[][] time_techs = {{2, 5, 8, 12}, {1, 2, 3}, {2, 4, 5}, {2, 5}, {2, 4, 6, 8}};
 	int counter_techs = 0;
 	int[] pending_techs = null;
@@ -51,6 +51,7 @@ public class DiegoLand {
 	int[] buildings = {0, 0, 0, 0, 0};
 	String[][] names_buildings = {{"Research Lab", "Allows new technologies to be researched"}, {"Barracks", "Allows training and recruitment of infantry-type units"}, {"Armored Vehicle Factory", "Allows construction and recruitment tank-type units"}, {"Airfield", "Allow construction and recruitment of air-based units"}, {"Radiology Lab", "Allows research into radioactive materials and their properties"}};
 	int[][] costs_buildings = {{50, 80, 0}, {150, 100, 0}, {2500, 500, 150}, {6000, 1000, 500}, {6000, 1000, 500}};
+	int[] req_buildings = {0, 3, 3, 5, 6, 6};
 	
 	int[] tiers = {0, 100, 300, 800, 12000, 30000, 60000, 120000};
 	int getTier() {
@@ -1069,6 +1070,49 @@ public class DiegoLand {
 			
 			System.out.println("Construct the RESEARCH LAB first to research techs!");
 			
+		} else {
+			
+			System.out.print("Would you like to research a tech? Y/N ");
+			if (scan.next().equalsIgnoreCase("Y")) {
+				
+				
+				
+			}
+			
+		}
+		
+	}
+	
+	void cmd_buildings() {
+		
+		System.out.println("BUILDINGS");
+		for (int i = 0; i < buildings.length; i++) {
+			
+			if (buildings[i] == 1) {
+				
+				System.out.println(names_buildings[i][0] + "- " + names_buildings[i][1]);
+				
+			} else if (buildings[i] == -1) {
+				
+				System.out.println(names_buildings[i][0] + "- under construction...");
+				
+			} else if (buildings[i] == 0 && req_buildings[i] <= getTier()) {
+				
+				String cost = "";
+				for (int j = 0; j < costs_buildings[i].length; j++) {
+					
+					if (costs_buildings[i][j] != 0) {
+						
+						int[] relative = {0, 3, 5};
+						cost += rsc_names[relative[j]];
+						
+					}
+					
+				}
+				System.out.println(names_buildings[i][0] + "- " + cost);
+				
+			}
+			
 		}
 		
 	}
@@ -1143,6 +1187,13 @@ public class DiegoLand {
 		case "RESEARCH":
 		case "T":
 			cmd_techs();
+			break;
+			
+		case "CONSTRUCTB":
+		case "BUILDINGS":
+		case "CB":
+		case "B":
+			cmd_buildings();
 			break;
 			
 		case "HELP":
