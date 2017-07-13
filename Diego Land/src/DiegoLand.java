@@ -125,7 +125,7 @@ public class DiegoLand {
 			System.out.println();
 			System.out.println("Nice job!");
 			System.out.println("There are many different commands that perform various actions.");
-			System.out.println("You can view all unlocked commands with the HELP command.");
+			System.out.println("You can view all unlocked commands with the HELP command, or view some basic starting tips with TIPS.");
 			System.out.println("Your next step should be constructing some factories to help you gain food.");
 			System.out.println("Good luck!");
 
@@ -420,7 +420,7 @@ public class DiegoLand {
 			
 		} else {
 			
-			System.out.print("Type # to view/collect, 0 to cancel: ");
+			System.out.print("Type # to view/collect/sell, 0 to cancel: ");
 			int index = scan.nextInt();
 			if (index < 1 || index > last) {
 				
@@ -702,7 +702,7 @@ public class DiegoLand {
 									
 										int old = rsc_land[factory_templates[index - 1].cost[i][j]];
 										rsc_land[factory_templates[index - 1].cost[i][j]] += (factory_templates[index - 1].cost[i][j + 1] * choice) / back;
-										_back += rsc[factory_templates[index - 1].cost[i][j]] + " " + names_land[factory_templates[index - 1].cost[i][j]] + " (+" + (rsc_land[factory_templates[index - 1].cost[i][j]] - old) + ") ";
+										_back += rsc_land[factory_templates[index - 1].cost[i][j]] + " " + names_land[factory_templates[index - 1].cost[i][j]] + " (+" + (rsc_land[factory_templates[index - 1].cost[i][j]] - old) + ") ";
 									
 									}
 									
@@ -714,7 +714,7 @@ public class DiegoLand {
 									
 										int old = rsc_flora[factory_templates[index - 1].cost[i][j]];
 										rsc_flora[factory_templates[index - 1].cost[i][j]] += (factory_templates[index - 1].cost[i][j + 1] * choice) / back;
-										_back += rsc[factory_templates[index - 1].cost[i][j]] + " " + names_flora[factory_templates[index - 1].cost[i][j]] + " (+" + (rsc_flora[factory_templates[index - 1].cost[i][j]] - old) + ") ";
+										_back += rsc_flora[factory_templates[index - 1].cost[i][j]] + " " + names_flora[factory_templates[index - 1].cost[i][j]] + " (+" + (rsc_flora[factory_templates[index - 1].cost[i][j]] - old) + ") ";
 									
 									}
 									
@@ -797,7 +797,7 @@ public class DiegoLand {
 			rsc[3] -= 50;
 			rsc[4] -= 50;
 			System.out.println("Scouting for land...");
-			int divider = rand.nextInt(30 + 1 - 18) + 18;
+			int divider = rand.nextInt(40 + 1 - 28) + 28;
 			int[] _land = new int[rsc_land.length - 1];
 			int[] land_change = new int[rsc_land.length];
 			int[] fauna_change = new int[rsc_fauna.length];
@@ -913,7 +913,7 @@ public class DiegoLand {
 			}
 			
 			int old = rsc_land[4];
-			rsc_land[4] += (40 - divider);
+			rsc_land[4] += (50 - divider);
 			land_change[4] = rsc_land[4] - old;
 			System.out.println();
 			System.out.println("Your search party discovered new resources and you now have: ");
@@ -938,7 +938,7 @@ public class DiegoLand {
 				System.out.print(rsc_mined[i] + " " + names_mined[i] + " (+" + mined_change[i] + ") | ");
 	
 			}
-			System.out.println();
+			System.out.println("");
 			
 		}
 		
@@ -962,6 +962,75 @@ public class DiegoLand {
 		String name = "Name";
 		Division d = new Division(units, name);
 		divisions.add(d);
+		
+	}
+	
+	void cmd_resourcesn() {
+		
+		System.out.println("NATURAL RESOURCES");
+		System.out.println("Land:  | " + rsc_land[0] + " " + names_land[0] + " | " + rsc_land[1] + " " + names_land[1] + " | " + rsc_land[2] + " " + names_land[2] + " | " + rsc_land[3] + " " + names_land[3] + " | " + rsc_land[4] + " " + names_land[4] + " |");
+		System.out.print("Fauna: | ");
+		for (int i = 0; i < rsc_fauna.length; i++) {
+
+			System.out.print(rsc_fauna[i] + " " + names_fauna[i] + " | ");
+
+		}
+		System.out.println();
+		System.out.print("Flora: | ");
+		for (int i = 0; i < rsc_flora.length; i++) {
+
+			System.out.print(rsc_flora[i] + " " + names_flora[i] + " | ");
+
+		}
+		System.out.println();
+		System.out.print("Mined: | ");
+		for (int i = 0; i < rsc_mined.length; i++) {
+
+			System.out.print(rsc_mined[i] + " " + names_mined[i] + " | ");
+
+		}
+		System.out.println("");
+		
+	}
+	
+	void cmd_clearland() {
+		
+		System.out.println("CLEAR LAND");
+		System.out.print("Would you like to convert 1) Forest ($700, you have " + rsc_land[0] + "), 2) Desert ($500, you have " + rsc_land[1] + "), 3) Lake ($900, you have " + rsc_land[2] + "), or 4) Grassland ($300, you have " + rsc_land[3] + ") to Cleared Land? (0 to cancel) ");
+		int choice = scan.nextInt();
+		if (choice < 1 || choice > 4) {
+			
+			System.out.println("CLEARLAND cancelled");
+			
+		} else {
+			
+			int[] costs = {700, 500, 900, 300};
+			System.out.print("Enter # to convert # of land, 0 to cancel: ");
+			int land = scan.nextInt();
+			if (land > rsc_land[choice - 1]) {
+				
+				System.out.println("You don't have enough land");
+				System.out.println("CLEARLAND cancelled");
+				
+			} else if (land <= 0) {
+				
+				System.out.println("CLEARLAND cancelled");
+				
+			} else if (land * costs[choice - 1] > rsc[0]) {
+				
+				System.out.println("You don't have enough money");
+				System.out.println("CLEARLAND cancelled");
+				
+			} else {
+				
+				rsc_land[choice - 1] -= land;
+				rsc_land[4] += land;
+				rsc[0] -= land * costs[choice - 1];
+				System.out.println("Converted " + land + " " + names_land[choice - 1] + " to Cleared Land (you now have " + rsc_land[4] + ") for $" + (land * costs[choice - 1]));
+				
+			}
+			
+		}
 		
 	}
 
@@ -1020,6 +1089,55 @@ public class DiegoLand {
 			}
 			break;
 			
+		case "RESOURCESN":
+		case "RN":
+			cmd_resourcesn();
+			break;
+			
+		case "CLEARLAND":
+		case "CL":
+		case "CLEAR":
+			cmd_clearland();
+			break;
+			
+		case "HELP":
+		case "COMMANDS":
+		case "H":
+		case "?":
+			System.out.println("LIST OF COMMANDS");
+			System.out.println("RESOURCES- view resource stockpiles");
+			System.out.println("CONSTRUCTF- buy factories");
+			System.out.println("FACTORIES- view status, collect from, and sell factories");
+			System.out.println("STATS- view in-game stats");
+			System.out.println("RESOURCESN- view natural resources");
+			System.out.println("CLEARLAND- convert land to cleared land");
+			System.out.println("PASS- skip day");
+			if (getTier() != 1) {
+				
+				System.out.println("EXPANDBORDERS- expand your borders");
+				
+			}
+			System.out.println("HELP- view this list");
+			System.out.println("Most commands have shorthand aliases (usually their first letter)");
+			System.out.println("\nStill need help? Run TIPS to see some starter tips.");
+			break;
+			
+		case "TIPS":
+			System.out.println("TIPS AND GAME MECHANICS");
+			System.out.println("Your Diego Land has a stockpile of nine different resources: money, food, power, building materials, consumer goods, metal, ammunition, fuel, and uranium.");
+			System.out.println("In addition, you also have natural resources such as bears, lakes, cacti, etc.");
+			System.out.println("You can spend/gain stockpiled resources through factories, but you can't replenish your natural resources except for when you expand your borders, available at Tier 2.");
+			System.out.println("Therefore, you must manage your resources carefully! Don't construct too many factories which will drain your resources very quickly, but don't construct too little or you will run out.");
+			System.out.println("\nYour population grows every day based on your food stockpile. When your population hits certain milestones, you advance a tier and unlock new capabilities.");
+			System.out.println("Your population also consumes food, power, and (later in the game) consumer goods, so make sure they have enough.");
+			System.out.println("They will also pay taxes, which becomes your money. Use money to buy factories, research technologies, and more.");
+			System.out.println("\nEventually, your Diego Land will have grown to the point where neighboring nations consider you a threat.");
+			System.out.println("For this reason, you will need to build up a military.");
+			System.out.println("You must recruit units (which use up extra money, food, ammunition, fuel, and/or uranium) to defend and fight for you.");
+			System.out.println("But don't worry! Wars start late-game, which is why you should use your starting days to stockpile resources and develop your Diego Land.");
+			System.out.println("\nGood luck and have fun!");
+			break;
+			
 		default:
 			System.out.println("Invalid command entered, run HELP to view a list of commands");
 
@@ -1044,7 +1162,7 @@ public class DiegoLand {
 				System.out.println();
 				if (getTier() != 8) {
 					
-					System.out.println("Next Tier: " + (getTier() + 1) + " (" + tiers[getTier()] + ")");
+					System.out.println("Next Tier: " + (getTier() + 1) + " (" + tiers[getTier()] + " pop.)");
 					System.out.println();
 					
 				}
@@ -1101,7 +1219,7 @@ public class DiegoLand {
 			}
 			for (int i = 0; i < rsc.length; i++) {
 				
-				if (rsc[i] - rsc_change[i] < 0) {
+				if (rsc[i] + rsc_change[i] < 0) {
 					
 					rsc[i] = 0;
 					
@@ -1516,8 +1634,6 @@ int data_debug = 0;
 		System.out.println();
 		System.out.println("Press ENTER to continue to DAY 1...");
 		scan.nextLine();
-		System.out.println("***");
-		System.out.println();
 		
 	}
 
