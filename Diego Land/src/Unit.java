@@ -4,7 +4,12 @@ public class Unit {
 	private int attk;
 	private int speed;
 	private String type;
+	private double defense;
 	private int START_HEALTH;
+	private int[] rsc;
+	private double val;
+	private String[] rsc_names = {"Money", "Food", "Ammo"};
+	private boolean hasAttacked = false;
 
 	public Unit(String type)
 	{
@@ -14,22 +19,28 @@ public class Unit {
 		case "Infantry":
 			this.hp = 0;
 			this.attk = 0;
-			this.speed = 0;
+			this.speed = 1;
 			START_HEALTH = this.hp;
+			this.defense = 0;
+			rsc = new int[] {0,0,0};
 			break;
 
 		case "Medic":
 			this.hp = 0;
 			this.attk = 0;
-			this.speed = 0;
+			this.speed = 2;
 			START_HEALTH = this.hp;
+			this.defense = 0;
+			rsc = new int[] {0,0,0};
 			break;
 
 		case "Sniper":
 			this.hp = 0;
 			this.attk = 0;
-			this.speed = 0;
+			this.speed = 3;
 			START_HEALTH = this.hp;
+			this.defense = 0;
+			rsc = new int[] {0,0,0};
 			break;
 		}
 	}
@@ -48,7 +59,7 @@ public class Unit {
 	public void Heal(Unit[] units, Unit a) //Kind-of weird integer division stuff...oh well I don't really care that much about the specifics
 	{
 		for(Unit i : units)
-			i.setHp(i.getSTART_HEALTH()/4);
+			i.setHp(i.getSTART_HEALTH()/5);
 	}
 
 	public int getHp() { return hp; }
@@ -68,5 +79,13 @@ public class Unit {
 	public void setName(String name) { this.type = name; }
 
 	public int getSTART_HEALTH() { return START_HEALTH; }
+	
+	public double getVal() { return this.val; }
+	
+	public void setVal(double val) { this.val = val; }
+	
+	public boolean getHasAttacked() { return hasAttacked; }
+	
+	public void setHasAttacked(boolean val) { hasAttacked = val; }
 }
 

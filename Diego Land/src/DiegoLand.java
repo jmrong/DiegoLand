@@ -1363,7 +1363,7 @@ int data_debug = 0;
 		}
 		
 	}
-	
+
 	void resourceGen() {
 		
 		// GENERATE
