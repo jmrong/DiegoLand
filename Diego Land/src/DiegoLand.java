@@ -956,6 +956,7 @@ public class DiegoLand {
 
 			for (time = 0; time < apd;) {
 
+				// battle chance?
 				System.out.print("Command: ");
 				String command = scan.next();
 				System.out.println();
