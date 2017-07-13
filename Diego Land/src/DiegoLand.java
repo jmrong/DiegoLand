@@ -11,6 +11,16 @@ import java.io.IOException;
 import java.math.*;
 
 public class DiegoLand {
+	
+	// HELPER FUNCTIONS
+	
+	public static int round(double value) {
+		
+		BigDecimal bigDec = new BigDecimal(value);
+		bigDec = bigDec.setScale(0, RoundingMode.HALF_UP);
+		return bigDec.intValue();
+		
+	}
 
 	// IMPORTS
 
@@ -24,6 +34,10 @@ public class DiegoLand {
 	int time = 0;
 	boolean run = true;
 	int apd = 4;
+	int happiness = 2;
+	int tax = 22;
+	int growth = 2;
+	int usage = 2;
 
 	int[] tiers = {0, 100, 300, 800, 12000, 30000, 60000, 120000};
 	int getTier() {
@@ -46,6 +60,7 @@ public class DiegoLand {
 
 	int[] rsc = {5000, 200, 50, 40, 20, 20, 0, 0, 0};
 	String[] rsc_names = {"Money", "Food", "Power", "Building Materials", "Consumer Goods", "Metal", "Ammunition", "Fuel", "Uranium"};
+	int[] rsc_change = {tax, usage * -1, -1, 0, 0,0, 0, 0, 0};
 
 		// NATURAL
 		
@@ -101,7 +116,8 @@ public class DiegoLand {
 		System.out.println("RESOURCES");
 		for (int i = 0; i < rsc.length; i++) {
 
-			System.out.println(rsc_names[i] + ": " + rsc[i]);
+			String sign = (rsc_change[i] >= 0) ? "+" : "";
+			System.out.println(rsc_names[i] + ": " + rsc[i] + " (" + sign + rsc_change[i] + ")");
 
 		}
 		if (day == 1 && time == 0) {
@@ -144,8 +160,19 @@ public class DiegoLand {
 		}
 		for (int i = 0; i < last; i++) {
 
-			System.out.print((i + 1) + ") " + factory_templates[i].name + "  ");
-			if ((i + 1) % 3 == 0) {
+			String function = "";
+			for (int j = 0; j < factory_templates[i].output.length; j += 2) {
+				
+				function += rsc_names[factory_templates[i].output[j]];
+				if (j + 2 < factory_templates[i].output.length) {
+			
+					function += ", ";
+					
+				}
+				
+			}
+			System.out.print((i + 1) + ") " + factory_templates[i].name + " (" + function + ")  ");
+			if ((i + 1) % 2 == 0) {
 
 				System.out.println();
 
@@ -475,16 +502,7 @@ public class DiegoLand {
 								
 								for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
 									
-									max += (factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * (factories_lastCollected[index - 1] / factory_templates[index - 1].time)) + " " + rsc_names[factory_templates[index - 1].input[i][j]];
-									if (j + 2 >= factory_templates[index - 1].input[i].length && factory_templates[index - 1].input[1].length == 0 && factory_templates[index - 1].input[2].length == 0) {
-										
-										max += "->";
-										
-									} else {
-										
-										max += " ";
-										
-									}
+									max += (factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * (factories_lastCollected[index - 1] / factory_templates[index - 1].time)) + " " + rsc_names[factory_templates[index - 1].input[i][j]] + " ";
 									
 								}
 								
@@ -494,15 +512,6 @@ public class DiegoLand {
 								for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
 									
 									max += (factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * (factories_lastCollected[index - 1] / factory_templates[index - 1].time)) + " " + names_fauna[factory_templates[index - 1].input[i][j]] + " ";
-									if (j + 2 >= factory_templates[index - 1].input[i].length && factory_templates[index - 1].input[2].length == 0) {
-										
-										max += "->";
-										
-									} else {
-										
-										max += " ";
-										
-									}
 									
 								}
 								
@@ -512,21 +521,13 @@ public class DiegoLand {
 								for (int j = 0; j < factory_templates[index - 1].input[i].length; j += 2) {
 									
 									max += (factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * (factories_lastCollected[index - 1] / factory_templates[index - 1].time)) + " " + names_mined[factory_templates[index - 1].input[i][j]] + " ";
-									if (j + 2 >= factory_templates[index - 1].input[i].length) {
-										
-										max += "->";
-										
-									} else {
-										
-										max += " ";
-										
-									}
 									
 								}
 								
 							}
 							
 						}
+						max += "->";
 						for (int i = 0; i < factory_templates[index - 1].output.length; i += 2) {
 							
 							max += " " + (factory_templates[index - 1].output[i + 1] * factories[index - 1] * (factories_lastCollected[index - 1]) / factory_templates[index - 1].time) + " " + rsc_names[factory_templates[index - 1].output[i]];
@@ -648,18 +649,13 @@ public class DiegoLand {
 										int old = rsc_mined[factory_templates[index - 1].input[i][j]];
 										rsc_mined[factory_templates[index - 1].input[i][j]] -= factory_templates[index - 1].input[i][j + 1] * factories[index - 1] * choice;
 										left += rsc_mined[factory_templates[index - 1].input[i][j]] + " " + names_mined[factory_templates[index - 1].input[i][j]] + " (-" + (old - rsc_mined[factory_templates[index - 1].input[i][j]]) + ") ";
-										if (j + 2 <= factory_templates[index - 1].input[i].length) {
-											
-											left += " ";
-											
-										}
 										
 									}
 									
 								}
 							
 							}
-							left += " & ";
+							left += "& ";
 							for (int i = 0; i < factory_templates[index - 1].output.length; i += 2) {
 								
 								int old = rsc[factory_templates[index - 1].output[i]];
@@ -746,12 +742,487 @@ public class DiegoLand {
 	void cmd_stats() {
 		
 		System.out.println("STATS");
-		System.out.println("Population: " + population);
-		System.out.println();
+		System.out.println("Population: " + population + " (+" + growth + ")");
+		System.out.println("Tier: " + getTier());
+		if (tax >= 0) {
+			
+			System.out.println("Tax income: +" + tax);
+			
+		} else {
+			
+			System.out.println("Tax income: " + tax);
+			
+		}
+		if (usage >= 0) {
+	
+			System.out.println("Growth food usage: +" + usage);
+			
+		} else {
+			
+			System.out.println("Growth food usage: " + usage);
+			
+		}
+		if (happiness >= 0) {
+			
+			System.out.println("Happiness: +" + happiness);
+			
+		} else {
+			
+			System.out.println("Happiness: " + happiness);
+			
+		}
 		
 	}
 	
-	int data_debug = 0;
+	void cmd_expand() {
+		
+		System.out.println("EXPAND BORDERS");
+		System.out.println("This will give you 40 random pieces of land, as well as their random resources.");
+		System.out.println("Price: 3,500 Money 400 Food 50 Power 50 Building Materials 50 Consumer Goods");
+		System.out.print("Continue? Y/N ");
+		if (!scan.next().equalsIgnoreCase("Y")) {
+			
+			System.out.println("EXPANDBORDERS cancelled");
+			
+		} else if (rsc[0] < 3500 || rsc[1] < 400 || rsc[2] < 50 || rsc[3] < 50 || rsc[4] < 50) {
+			
+			System.out.println("You don't have enough resources");
+			System.out.println("EXPANDBORDERS cancelled");
+			
+		} else {
+			
+			rsc[0] -= 3500;
+			rsc[1] -= 400;
+			rsc[2] -= 50;
+			rsc[3] -= 50;
+			rsc[4] -= 50;
+			System.out.println("Scouting for land...");
+			int divider = rand.nextInt(30 + 1 - 18) + 18;
+			int[] _land = new int[rsc_land.length - 1];
+			int[] land_change = new int[rsc_land.length];
+			int[] fauna_change = new int[rsc_fauna.length];
+			int[] flora_change = new int[rsc_flora.length];
+			int[] mined_change = new int[rsc_mined.length];
+			for (int i = 0; i < divider; i++) {
+	
+				double prob = rand.nextDouble();
+				if (prob < stats_land[0]) {
+	
+					rsc_land[0]++;
+					_land[0]++;
+					land_change[0]++;
+	
+				} else if (prob < stats_land[1]) {
+	
+					rsc_land[1]++;
+					_land[1]++;
+					land_change[1]++;
+	
+				} else if (prob < stats_land[2]) {
+	
+					rsc_land[2]++;
+					_land[2]++;
+					land_change[2]++;
+	
+				} else if (prob < stats_land[3]) {
+	
+					rsc_land[3]++;
+					_land[3]++;
+					land_change[3]++;
+					
+				}
+	
+			}
+	
+			// i = land type, j = land tile #, k = rsc #, l = rsc land #, m = # of rsc, n = rsc gen min
+	
+			for (int i = 0; i < _land.length; i++) {
+	
+				for (int j = 0; j < _land[i]; j++) {
+	
+					for (int k = 0; k < stats_fauna.length; k++) {
+	
+						for (int l = 0; l < stats_fauna[k].length; l += 4) {
+	
+							if (stats_fauna[k][l] == (double)i) {
+	
+								double random = rand.nextDouble();
+								if (random < stats_fauna[k][l + 1]) {
+	
+									Double m = new Double(stats_fauna[k][l + 3] + 1 - stats_fauna[k][l + 2]);
+									Double n = new Double(stats_fauna[k][l + 2]);
+									int add = rand.nextInt(m.intValue()) + n.intValue();
+									rsc_fauna[k] += add;
+									fauna_change[k] += add;
+	
+								}
+	
+							}
+	
+						}
+	
+					}
+	
+					for (int k = 0; k < stats_flora.length; k++) {
+	
+						for (int l = 0; l < stats_flora[k].length; l += 4) {
+	
+							if (stats_flora[k][l] == (double)i) {
+	
+								double random = rand.nextDouble();
+								if (random < stats_flora[k][l + 1]) {
+	
+									Double m = new Double(stats_flora[k][l + 3] + 1 - stats_flora[k][l + 2]);
+									Double n = new Double(stats_flora[k][l + 2]);
+									int add = rand.nextInt(m.intValue()) + n.intValue();
+									rsc_flora[k] += add;
+									flora_change[k] += add;
+	
+								}
+	
+							}
+	
+						}
+	
+					}
+	
+					for (int k = 0; k < stats_mined.length; k++) {
+	
+						for (int l = 0; l < stats_mined[k].length; l += 4) {
+	
+							if (stats_mined[k][l] == (double)i) {
+	
+								if (rand.nextDouble() < stats_mined[k][l + 1]) {
+	
+									Double m = new Double(stats_mined[k][l + 3] + 1 - stats_mined[k][l + 2]);
+									Double n = new Double(stats_mined[k][l + 2]);
+									int add = rand.nextInt(m.intValue()) + n.intValue();
+									rsc_mined[k] += add;
+									mined_change[k] += add;
+	
+								}
+	
+							}
+	
+						}
+	
+					}
+	
+				}
+	
+			}
+			
+			int old = rsc_land[4];
+			rsc_land[4] += (40 - divider);
+			land_change[4] = rsc_land[4] - old;
+			System.out.println();
+			System.out.println("Your search party discovered new resources and you now have: ");
+			System.out.println("Land:  | " + rsc_land[0] + " " + names_land[0] + " (+" + land_change[0] + ") | " + rsc_land[1] + " " + names_land[1] + " (+" + land_change[1] + ") | " + rsc_land[2] + " " + names_land[2] + " (+" + land_change[2] + ") | " + rsc_land[3] + " " + names_land[3] + " (+" + land_change[3] + ") | " + rsc_land[4] + " " + names_land[4] + " (+" + land_change[4] + ") |");
+			System.out.print("Fauna: | ");
+			for (int i = 0; i < rsc_fauna.length; i++) {
+	
+				System.out.print(rsc_fauna[i] + " " + names_fauna[i] + " (+" + fauna_change[i] + ") | ");
+	
+			}
+			System.out.println();
+			System.out.print("Flora: | ");
+			for (int i = 0; i < rsc_flora.length; i++) {
+	
+				System.out.print(rsc_flora[i] + " " + names_flora[i] + " (+" + flora_change[i] + ") | ");
+	
+			}
+			System.out.println();
+			System.out.print("Mined: | ");
+			for (int i = 0; i < rsc_mined.length; i++) {
+	
+				System.out.print(rsc_mined[i] + " " + names_mined[i] + " (+" + mined_change[i] + ") | ");
+	
+			}
+			System.out.println();
+			
+		}
+		
+	}
+	
+	// pending merge with a more generalized command
+	void cmd_create_division() {
+		
+		Unit[] units = new Unit[10];
+		System.out.println("This is the Division Creation Commmand, hit ENTER to get started!");
+		scan.nextLine();
+		for (int i = 0; i < 10; i++) {
+			
+			System.out.println("\nEnter type for Unit:");
+			System.out.print("Type(Infantry, Medic, Sniper): ");
+			String type = scan.nextLine();
+			units[i] = new Unit(type);
+			System.out.println("Unit succesfully added!");
+			
+		}
+		String name = "Name";
+		Division d = new Division(units, name);
+		divisions.add(d);
+		
+	}
+
+	// COMMAND HANDLER
+
+	void command(String command) {
+		
+		switch (command.toUpperCase()) {
+		
+		case "RESOURCES":
+		case "R":
+			cmd_resources();
+			break;
+
+		case "CONSTRUCT":
+			System.out.println("Trying to construct? Use CONSTRUCTF for factories and CONSTRUCTB for buildings.");
+			break;
+
+		case "CONSTRUCTF":
+		case "CF":
+			cmd_constructf();
+			break;
+			
+		case "FACTORIES":
+		case "F":
+			cmd_factories();
+			break;
+			
+		case "STATS":
+		case "S":
+			cmd_stats();
+			break;
+			
+		case "CREATEDIVISION":
+			cmd_create_division();
+			break;
+		
+		case "PASS":
+		case "P":
+			System.out.println("Day passed!");
+			System.out.println("***");
+			time = apd;
+			break;
+			
+		case "EXPANDBORDERS":
+		case "EXPAND":
+		case "EB":
+			if (getTier() == 1) {
+				
+				System.out.println("You must be Tier 2 or above to do this...");
+				
+			} else {
+				
+				cmd_expand();
+				
+			}
+			break;
+			
+		default:
+			System.out.println("Invalid command entered, run HELP to view a list of commands");
+
+		}
+
+	}
+
+	// GAME LOOP
+
+	boolean announce = false;
+	
+	void GameLoop() {
+
+		while (run) {
+
+			if (announce) {
+				
+				String[] features = {"-Consumer goods production unlocked\n-Metal production unlocked\n-Expand borders unlocked", "-Consumer goods population requirement\n-Military unlocked\n-Ammunition production unlocked", "-Expeditions unlocked\n! WARS UNLOCKED", "-Fuel production unlocked", "-???", "-Uranium production unlocked", "-You have reached the population cap! Great job!"};
+				System.out.println("*** TIER " + getTier() + " UNLOCKED!!! ***");
+				System.out.println("New Features:");
+				System.out.println(features[getTier() - 2]);
+				System.out.println();
+				if (getTier() != 8) {
+					
+					System.out.println("Next Tier: " + (getTier() + 1) + " (" + tiers[getTier()] + ")");
+					System.out.println();
+					
+				}
+				System.out.println("***");
+				System.out.println();
+				announce = false;
+				
+			} else {
+				
+				System.out.println("***");
+				System.out.println();
+				
+			}
+			
+			System.out.println("DAY " + day);
+			System.out.println();
+
+			if (day == 1) {
+
+				System.out.println("Welcome to Diego Land!");
+				System.out.println("Your job is to allow your newly generated virtual nation to thrive.");
+				System.out.println("You must manage your resources, build up a military, and survive attacks from neighboring rivals.");
+				System.out.println("To do this, you can type in various COMMANDS every turn.");
+				System.out.println("Start off by typing in the RESOURCES command below.");
+				System.out.println();
+
+			}
+
+			for (time = 0; time < apd;) {
+
+				System.out.print("Command: ");
+				String command = scan.next();
+				System.out.println();
+				command(command);
+				System.out.println();
+
+			}
+
+			for (int i = 0; i < factories.length; i++) {
+				
+				if (factories[i] != 0) {
+					
+					factories_lastCollected[i]++;
+					
+				}
+				
+			}
+			int oldTier = getTier();
+			population += growth;
+			if (getTier() > oldTier) {
+				
+				announce = true;
+				
+			}
+			for (int i = 0; i < rsc.length; i++) {
+				
+				if (rsc[i] - rsc_change[i] < 0) {
+					
+					rsc[i] = 0;
+					
+				} else {
+					
+					rsc[i] += rsc_change[i];
+					
+				}
+				
+			}
+			happiness = 2;
+			if (rsc[0] == 0) {
+				
+				happiness -= 4;
+				
+			}
+			if (rsc[1] == 0) {
+				
+				happiness -= 4;
+				
+			}
+			if (rsc[2] == 0) {
+				
+				happiness -= 2;
+				
+			}
+			if (rsc[4] == 0 && getTier() >= 3) {
+				
+				happiness -= 3;
+			
+			}
+			int oldtax = tax;
+			int oldusage = usage;
+			tax = round(population + ((0.1 * population) * happiness));
+			growth = round(rsc[1] * 0.01);
+			usage = round(population * 0.1);
+			rsc_change[2] = round(population * -0.05);
+			if (getTier() >= 3) {
+				
+				rsc_change[4] = round(population * 0.02);
+				
+			}
+			rsc_change[0] = rsc_change[0] - oldtax + tax;
+			rsc_change[1] = rsc_change[1] + oldusage - usage;
+			scan.nextLine();
+			System.out.println("DAY " + day + " OVER!");
+			System.out.println("New population: " + population + " (new growth: +" + growth + ")");
+			String[] shorts = {"$", "F", "P", "BM", "CG", "M", "A", "FL", "U"};
+			for (int i = 0; i < rsc.length; i++) {
+				
+				String sign = (rsc_change[i] >= 0) ? "+" : "";
+				System.out.print(shorts[i] + " " + rsc[i] + " (" + sign + rsc_change[i] + ")   ");
+				
+			}
+			System.out.println("\nHappiness: " + happiness);
+			System.out.println();
+			System.out.println("Press ENTER to save and continue to DAY " + (day + 1) + "...");
+			if (scan.nextLine().equals("DELETE")) {
+				
+				System.out.print("Confirm Y/N ");
+				if (scan.next().equalsIgnoreCase("Y")) {
+					
+					System.out.println("Deleting data...");
+					population = 20;
+					day = 1;
+					apd = 4;
+					data_debug = 0;
+					rsc = new int[]{5000, 200, 50, 40, 20, 20, 0, 0, 0};
+					rsc_land = new int[]{0, 0, 0, 0, 20};
+					rsc_fauna = new int[3 + 1];
+					rsc_flora = new int[4 + 1];
+					rsc_mined = new int[9 + 1];
+					factories = new int[factory_templates.length];
+					factories_lastCollected = new int[factory_templates.length];
+					rsc_change = new int[]{tax, growth * -1, -1, 0, 0,0, 0, 0, 0};
+					happiness = 2;
+					tax = 22;
+					growth = 2;
+					usage = 2;
+					try {
+						
+						saveData();
+						System.out.println("Data deleted! Please restart game...");
+						System.exit(-1);
+						
+					} catch (IOException e) {
+						
+						System.out.println("Error: data could not be deleted; please restart game");
+						e.printStackTrace();
+						System.exit(-1);
+						
+					}
+					
+				} else {
+					
+					System.out.println();
+					
+				}
+				
+			}
+			day++;
+			try {
+				
+				data_debug = 1;
+				saveData();
+				
+			} catch (IOException e) {
+				
+				data_debug = 0;
+				System.out.println("Error: data could not be saved");
+				e.printStackTrace();
+				
+			}
+			
+		}
+
+	}
+	
+	// SAVE/LOAD
+	
+int data_debug = 0;
 	
 	void saveData() throws IOException {
 		
@@ -773,6 +1244,12 @@ public class DiegoLand {
 		
 		save.Save(factories, writer);
 		save.Save(factories_lastCollected, writer);
+		
+		save.Save(rsc_change, writer);
+		save.Save(growth, writer);
+		save.Save(tax, writer);
+		save.Save(usage, writer);
+		save.Save(happiness, writer);
 
 		writer.flush();
         writer.close();
@@ -845,6 +1322,26 @@ public class DiegoLand {
 					
 					factories_lastCollected = int_data;
 					
+				} else if (count == 12) {
+					
+					rsc_change = int_data;
+					
+				} else if (count == 13) {
+					
+					growth = int_data[0];
+					
+				} else if (count == 14) {
+					
+					tax = int_data[0];
+					
+				} else if (count == 15) {
+					
+					usage = int_data[0];
+					
+				} else if (count == 16) {
+					
+					happiness = int_data[0];
+					
 				}
 				
 			}
@@ -867,290 +1364,160 @@ public class DiegoLand {
 		
 	}
 	
-	void cmd_create_division()  
-	{
-		Unit[] units = new Unit[10];
-		System.out.println("This is the Division Creation Commmand, hit ENTER to get started!");
-		scan.nextLine();
-		for(int i = 0; i < 10; i++)
-		{
-			System.out.println("\nEnter type for Unit:");
-			System.out.print("Type(Infantry, Medic, Sniper): ");
-			String type = scan.nextLine();
-			units[i] = new Unit(type);
-			System.out.println("Unit succesfully added!");
-			
-		}
-		String name = "Name";
-		Division d = new Division(units, name);
-		divisions.add(d);
-	}
-
-	// COMMAND HANDLER
-
-	void command(String command) {
-		
-		switch (command.toUpperCase()) {
-		
-		case "RESOURCES":
-		case "R":
-			cmd_resources();
-			break;
-
-		case "CONSTRUCT":
-			System.out.println("Trying to construct? Use CONSTRUCTF for factories and CONSTRUCTB for buildings.");
-			break;
-
-		case "CONSTRUCTF":
-		case "CF":
-			cmd_constructf();
-			break;
-			
-		case "FACTORIES":
-		case "F":
-			cmd_factories();
-			break;
-			
-		case "STATS":
-		case "S":
-			cmd_stats();
-			break;
-			
-		case "CREATEDIVISION":
-			cmd_create_division();
-			break;
-		
-		case "PASS":
-		case "P":
-			System.out.println("Day passed!");
-			System.out.println("***");
-			time = apd;
-			break;
-			
-		default:
-			System.out.println("Invalid command entered, run HELP to view a list of commands");
-
-		}
-
-	}
-
-	// GAME LOOP
-
-	void GameLoop() {
-
-		while (run) {
-
-			System.out.println("DAY " + day);
-			System.out.println();
-
-			if (day == 1) {
-
-				System.out.println("Welcome to Diego Land!");
-				System.out.println("Your job is to allow your newly generated virtual nation to thrive.");
-				System.out.println("You must manage your resources, build up a military, and survive attacks from neighboring rivals.");
-				System.out.println("To do this, you can type in various COMMANDS every turn.");
-				System.out.println("Start off by typing in the RESOURCES command below.");
-				System.out.println();
-
-			}
-
-			for (time = 0; time < apd;) {
-
-				System.out.print("Command: ");
-				String command = scan.next();
-				System.out.println();
-				command(command);
-				System.out.println();
-
-			}
-
-			for (int i = 0; i < factories.length; i++) {
-				
-				if (factories[i] != 0) {
-					
-					factories_lastCollected[i]++;
-					
-				}
-				
-			}
-
-			scan.nextLine();
-			System.out.println("Day is over! Press ENTER to save and continue to DAY " + (day + 1) + "...");
-			scan.nextLine();
-			System.out.println("***");
-			System.out.println();
-			day++;
-			try {
-				
-				data_debug = 1;
-				saveData();
-				
-			} catch (IOException e) {
-				
-				data_debug = 0;
-				System.out.println("Error: data could not be saved");
-				e.printStackTrace();
-				
-			}
-			
-		}
-
-	}
-	
 	void resourceGen() {
 		
 		// GENERATE
 		
-				System.out.print("Press ENTER to generate resources... ");
-				scan.nextLine();
-		
-				System.out.println("Generating resources...");
-		
-				// LAND
-		
-				double rsc_total = 0;
-				for (int i = 0; i < 80; i++) {
-		
-					double prob = rand.nextDouble();
-					if (prob < stats_land[0]) {
-		
-						rsc_land[0]++;
-		
-					} else if (prob < stats_land[1]) {
-		
-						rsc_land[1]++;
-		
-					} else if (prob < stats_land[2]) {
-		
-						rsc_land[2]++;
-		
-					} else if (prob < stats_land[3]) {
-		
-						rsc_land[3]++;
-		
+		System.out.print("Press ENTER to generate resources... ");
+		scan.nextLine();
+
+		System.out.println("Generating resources...");
+
+		// LAND
+
+		double rsc_total = 0;
+		for (int i = 0; i < 80; i++) {
+
+			double prob = rand.nextDouble();
+			if (prob < stats_land[0]) {
+
+				rsc_land[0]++;
+
+			} else if (prob < stats_land[1]) {
+
+				rsc_land[1]++;
+
+			} else if (prob < stats_land[2]) {
+
+				rsc_land[2]++;
+
+			} else if (prob < stats_land[3]) {
+
+				rsc_land[3]++;
+
+			}
+
+		}
+
+		// i = land type, j = land tile #, k = rsc #, l = rsc land #, m = # of rsc, n = rsc gen min
+
+		for (int i = 0; i < rsc_land.length; i++) {
+
+			for (int j = 0; j < rsc_land[i]; j++) {
+
+				for (int k = 0; k < stats_fauna.length; k++) {
+
+					for (int l = 0; l < stats_fauna[k].length; l += 4) {
+
+						if (stats_fauna[k][l] == (double)i) {
+
+							double random = rand.nextDouble();
+							if (random < stats_fauna[k][l + 1]) {
+
+								Double m = new Double(stats_fauna[k][l + 3] + 1 - stats_fauna[k][l + 2]);
+								Double n = new Double(stats_fauna[k][l + 2]);
+								int add = rand.nextInt(m.intValue()) + n.intValue();
+								rsc_fauna[k] += add;
+								rsc_total += add;
+
+							}
+
+						}
+
 					}
-		
+
 				}
-		
-				// i = land type, j = land tile #, k = rsc #, l = rsc land #, m = # of rsc, n = rsc gen min
-		
-				for (int i = 0; i < rsc_land.length; i++) {
-		
-					for (int j = 0; j < rsc_land[i]; j++) {
-		
-						for (int k = 0; k < stats_fauna.length; k++) {
-		
-							for (int l = 0; l < stats_fauna[k].length; l += 4) {
-		
-								if (stats_fauna[k][l] == (double)i) {
-		
-									double random = rand.nextDouble();
-									if (random < stats_fauna[k][l + 1]) {
-		
-										Double m = new Double(stats_fauna[k][l + 3] + 1 - stats_fauna[k][l + 2]);
-										Double n = new Double(stats_fauna[k][l + 2]);
-										int add = rand.nextInt(m.intValue()) + n.intValue();
-										rsc_fauna[k] += add;
-										rsc_total += add;
-		
-									}
-		
-								}
-		
+
+				for (int k = 0; k < stats_flora.length; k++) {
+
+					for (int l = 0; l < stats_flora[k].length; l += 4) {
+
+						if (stats_flora[k][l] == (double)i) {
+
+							double random = rand.nextDouble();
+							if (random < stats_flora[k][l + 1]) {
+
+								Double m = new Double(stats_flora[k][l + 3] + 1 - stats_flora[k][l + 2]);
+								Double n = new Double(stats_flora[k][l + 2]);
+								int add = rand.nextInt(m.intValue()) + n.intValue();
+								rsc_flora[k] += add;
+								rsc_total += add;
+
 							}
-		
+
 						}
-		
-						for (int k = 0; k < stats_flora.length; k++) {
-		
-							for (int l = 0; l < stats_flora[k].length; l += 4) {
-		
-								if (stats_flora[k][l] == (double)i) {
-		
-									double random = rand.nextDouble();
-									if (random < stats_flora[k][l + 1]) {
-		
-										Double m = new Double(stats_flora[k][l + 3] + 1 - stats_flora[k][l + 2]);
-										Double n = new Double(stats_flora[k][l + 2]);
-										int add = rand.nextInt(m.intValue()) + n.intValue();
-										rsc_flora[k] += add;
-										rsc_total += add;
-		
-									}
-		
-								}
-		
-							}
-		
-						}
-		
-						for (int k = 0; k < stats_mined.length; k++) {
-		
-							for (int l = 0; l < stats_mined[k].length; l += 4) {
-		
-								if (stats_mined[k][l] == (double)i) {
-		
-									if (rand.nextDouble() < stats_mined[k][l + 1]) {
-		
-										Double m = new Double(stats_mined[k][l + 3] + 1 - stats_mined[k][l + 2]);
-										Double n = new Double(stats_mined[k][l + 2]);
-										int add = rand.nextInt(m.intValue()) + n.intValue();
-										rsc_mined[k] += add;
-										rsc_total += add;
-		
-									}
-		
-								}
-		
-							}
-		
-						}
-		
+
 					}
-		
+
 				}
-		
-				// PRINT
-		
-				System.out.println();
-				System.out.println("Land:  | " + rsc_land[0] + " " + names_land[0] + " | " + rsc_land[1] + " " + names_land[1] + " | " + rsc_land[2] + " " + names_land[2] + " | " + rsc_land[3] + " " + names_land[3] + " |");
-				System.out.print("Fauna: | ");
-				for (int i = 0; i < rsc_fauna.length; i++) {
-		
-					System.out.print(rsc_fauna[i] + " " + names_fauna[i] + " | ");
-		
+
+				for (int k = 0; k < stats_mined.length; k++) {
+
+					for (int l = 0; l < stats_mined[k].length; l += 4) {
+
+						if (stats_mined[k][l] == (double)i) {
+
+							if (rand.nextDouble() < stats_mined[k][l + 1]) {
+
+								Double m = new Double(stats_mined[k][l + 3] + 1 - stats_mined[k][l + 2]);
+								Double n = new Double(stats_mined[k][l + 2]);
+								int add = rand.nextInt(m.intValue()) + n.intValue();
+								rsc_mined[k] += add;
+								rsc_total += add;
+
+							}
+
+						}
+
+					}
+
 				}
-				System.out.println();
-				System.out.print("Flora: | ");
-				for (int i = 0; i < rsc_flora.length; i++) {
-		
-					System.out.print(rsc_flora[i] + " " + names_flora[i] + " | ");
-		
-				}
-				System.out.println();
-				System.out.print("Mined: | ");
-				for (int i = 0; i < rsc_mined.length; i++) {
-		
-					System.out.print(rsc_mined[i] + " " + names_mined[i] + " | ");
-		
-				}
-				System.out.println();
-				rsc_total = (rsc_total - 2250) / 1000;
-				if (rsc_total > 0) {
-		
-					System.out.println("Luck: +" + rsc_total);
-		
-				} else {
-		
-					System.out.println("Luck: " + rsc_total);
-		
-				}
-		
-				System.out.println();
-				System.out.println("Press ENTER to continue to DAY 1...");
-				scan.nextLine();
-				System.out.println("***");
-				System.out.println();
+
+			}
+
+		}
+
+		// PRINT
+
+		System.out.println();
+		System.out.println("Land:  | " + rsc_land[0] + " " + names_land[0] + " | " + rsc_land[1] + " " + names_land[1] + " | " + rsc_land[2] + " " + names_land[2] + " | " + rsc_land[3] + " " + names_land[3] + " |");
+		System.out.print("Fauna: | ");
+		for (int i = 0; i < rsc_fauna.length; i++) {
+
+			System.out.print(rsc_fauna[i] + " " + names_fauna[i] + " | ");
+
+		}
+		System.out.println();
+		System.out.print("Flora: | ");
+		for (int i = 0; i < rsc_flora.length; i++) {
+
+			System.out.print(rsc_flora[i] + " " + names_flora[i] + " | ");
+
+		}
+		System.out.println();
+		System.out.print("Mined: | ");
+		for (int i = 0; i < rsc_mined.length; i++) {
+
+			System.out.print(rsc_mined[i] + " " + names_mined[i] + " | ");
+
+		}
+		System.out.println();
+		rsc_total = (rsc_total - 2250) / 1000;
+		if (rsc_total > 0) {
+
+			System.out.println("Luck: +" + rsc_total);
+
+		} else {
+
+			System.out.println("Luck: " + rsc_total);
+
+		}
+
+		System.out.println();
+		System.out.println("Press ENTER to continue to DAY 1...");
+		scan.nextLine();
+		System.out.println("***");
+		System.out.println();
 		
 	}
 
@@ -1177,8 +1544,6 @@ public class DiegoLand {
 				System.out.println("Loading data...");
 				game.loadData();
 				System.out.println();
-				System.out.println("***");
-				System.out.println();
 				game.GameLoop();
 				
 			} else {
@@ -1190,8 +1555,6 @@ public class DiegoLand {
 					
 					System.out.println("Delete data cancelled");
 					System.out.println("Loading data...");
-					System.out.println();
-					System.out.println("***");
 					System.out.println();
 					game.GameLoop();
 					
@@ -1209,6 +1572,11 @@ public class DiegoLand {
 					game.rsc_mined = new int[9 + 1];
 					game.factories = new int[game.factory_templates.length];
 					game.factories_lastCollected = new int[game.factory_templates.length];
+					game.rsc_change = new int[]{game.tax, game.growth * -1, -1, 0, 0,0, 0, 0, 0};
+					game.happiness = 2;
+					game.tax = 22;
+					game.growth = 2;
+					game.usage = 2;
 					try {
 						
 						game.saveData();
@@ -1246,6 +1614,11 @@ public class DiegoLand {
 			game.rsc_mined = new int[9 + 1];
 			game.factories = new int[game.factory_templates.length];
 			game.factories_lastCollected = new int[game.factory_templates.length];
+			game.rsc_change = new int[]{game.tax, game.growth * -1, -1, 0, 0,0, 0, 0, 0};
+			game.happiness = 2;
+			game.tax = 22;
+			game.growth = 2;
+			game.usage = 2;
 			game.resourceGen();
 	
 			game.GameLoop();
