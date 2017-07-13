@@ -4,6 +4,14 @@ public class War {
 	private String[] countries = {"Davis Land"};
 	private int battles_won = 0;
 	private int battles_lost = 0;
+	private Division[] army1;
+	private Division[] army2;
+	
+	public War(Division[] army1, Division[] army2)
+	{
+		this.army1 = army1;
+		this.army2 = army2;
+	}
 	
 	public boolean isWarLost()
 	{

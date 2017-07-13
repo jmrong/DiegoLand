@@ -1,25 +1,27 @@
+import java.util.Random;
+
 
 public class Unit {
 	private int hp;
 	private int attk;
-	private int speed;
+	private double speed;
 	private String type;
 	private double defense;
 	private int START_HEALTH;
 	private int[] rsc;
-	private double val;
 	private String[] rsc_names = {"Money", "Food", "Ammo"};
 	private boolean hasAttacked = false;
 
 	public Unit(String type)
 	{
+		Random rand = new Random();
 		this.type = type;
 		switch(this.type)
 		{
 		case "Infantry":
-			this.hp = 0;
-			this.attk = 0;
-			this.speed = 1;
+			this.hp = 100;
+			this.attk = 10;
+			this.speed = 1 + rand.nextDouble();
 			START_HEALTH = this.hp;
 			this.defense = 0;
 			rsc = new int[] {0,0,0};
@@ -28,7 +30,7 @@ public class Unit {
 		case "Medic":
 			this.hp = 0;
 			this.attk = 0;
-			this.speed = 2;
+			this.speed = 2 + rand.nextDouble();
 			START_HEALTH = this.hp;
 			this.defense = 0;
 			rsc = new int[] {0,0,0};
@@ -37,7 +39,7 @@ public class Unit {
 		case "Sniper":
 			this.hp = 0;
 			this.attk = 0;
-			this.speed = 3;
+			this.speed = 3 + rand.nextDouble();
 			START_HEALTH = this.hp;
 			this.defense = 0;
 			rsc = new int[] {0,0,0};
@@ -70,7 +72,7 @@ public class Unit {
 
 	public void setAttk(int attk) { this.attk = attk; }
 
-	public int getSpeed() { return speed; }
+	public double getSpeed() { return speed; }
 
 	public void setSpeed(int speed) { this.speed = speed; }
 
@@ -79,10 +81,6 @@ public class Unit {
 	public void setName(String name) { this.type = name; }
 
 	public int getSTART_HEALTH() { return START_HEALTH; }
-	
-	public double getVal() { return this.val; }
-	
-	public void setVal(double val) { this.val = val; }
 	
 	public boolean getHasAttacked() { return hasAttacked; }
 	

@@ -11,99 +11,101 @@ public class Battle {
 		this.d2 = d2;
 	}
 
-	public int toBattle()
+	public void toBattle()
 	{
 		Random rand = new Random();
-		for(Unit i : d1.getUnits())
-		{
-			double val = rand.nextDouble();
-			i.setVal(val+i.getSpeed());
-		}
-
-		for(Unit i : d2.getUnits())
-		{
-			double val = rand.nextDouble();
-			i.setVal(val+i.getSpeed());
-		}
-
 		d1.SortDivision();
 		d2.SortDivision();
-
-		int i = 0;
-		int j = 0;
-
-		while(!D1Lost() || !D2Lost())
+		int attacker = 0;
+		if(fastestDivision() == d1)
 		{
-			if(i > d1.getUnits().length)
-			{
-				d1.resetAttack();
-				i = 0;
-			}
+			System.out.println(d1.getName()+" attacks first!\n");
+			attacker = 1;
+		}
+		else
+		{
+			System.out.println(d2.getName()+" attacks first!\n");
+			attacker = 2;
+		}
 
-			if(j > d2.getUnits().length)
-			{
-				d2.resetAttack();
-				j = 0;
-			}
-			
-			
-			if(d1.getUnits()[i].getHasAttacked())
-			{
-				i++;
-			}
 
-			if(d2.getUnits()[j].getHasAttacked())
+		while(!BattleLost())
+		{
+			if(attacker == 1)
 			{
-				j++;
-			}
-
-			if(d1.getUnits()[i].getSpeed() > d2.getUnits()[j].getSpeed())
-			{
-				d1.getUnits()[i].Attack(d1.getUnits()[i], d2.getUnits()[j]);
-				d1.getUnits()[i].setHasAttacked(true);
+				for(Unit i : d1.getUnits())
+				{
+					int attk2 = rand.nextInt(d2.getUnits().length);
+					System.out.println(i.getName()+" from "+d1.getName()+" attacks "+d2.getUnits()[attk2].getName()+" from "+d2.getName()+"!\n");
+					i.Attack(i, d2.getUnits()[attk2]);
+				}
 			}
 			else
 			{
-				d2.getUnits()[i].Attack(d2.getUnits()[j], d1.getUnits()[i]);
-				d2.getUnits()[i].setHasAttacked(true);
+				for(Unit i : d2.getUnits())
+				{
+					int attk2 = rand.nextInt(d1.getUnits().length);
+					System.out.println(i.getName()+" from "+d2.getName()+" attacks "+d1.getUnits()[attk2].getName()+" from "+d1.getName()+"!\n");
+					i.Attack(i, d1.getUnits()[attk2]);		
+				}
 			}
-		}	
-		
-		if(D1Lost())
+			
+			attacker = Switch(attacker);
+		}
+	}
+
+
+
+	public boolean BattleLost()
+	{
+		if(d1.zeroHp() || d2.zeroHp())
+		{
+			if(d1.zeroHp()) System.out.println("d1 lost");
+			else System.out.println("d2 lost");
+			return true;
+		}
+		return false;
+	}
+
+	public Division fastestDivision()
+	{
+		if(d1.getMaxSpeed() > d2.getMaxSpeed())
+			return d1;
+		else if(d1.getMaxSpeed() == d2.getMaxSpeed())
+		{
+			Random rand = new Random();
+			int d = rand.nextInt(2);
+			if(d == 0)
+				return d1;
+			else 
+				return d2;
+		}
+		else
+			return d2;
+	}
+
+	public int Switch(int attacker)
+	{
+		if(attacker == 1)
 			return 2;
 		else
 			return 1;
 	}
 
-	public boolean D1Lost()
-	{
-		int count1 = 0;
-		for(Unit i : d1.getUnits())
-		{
-			if(i.getHp() <= 0)
-				count1++;
-		}
-
-		if(count1 == d1.getUnits().length)
-			return true;
-
-		return false;
-
-
+	public Division getD1() {
+		return d1;
 	}
 
-	public boolean D2Lost()
-	{
-		int count2 = 0;
-		for(Unit i : d2.getUnits())
-		{
-			if(i.getHp() <= 0)
-				count2++;
-		}
-
-		if(count2 == d2.getUnits().length)
-			return true;
-
-		return false;
+	public void setD1(Division d1) {
+		this.d1 = d1;
 	}
+
+	public Division getD2() {
+		return d2;
+	}
+
+	public void setD2(Division d2) {
+		this.d2 = d2;
+	}
+	
 }
