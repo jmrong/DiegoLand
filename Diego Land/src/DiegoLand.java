@@ -34,11 +34,24 @@ public class DiegoLand {
 	int time = 0;
 	boolean run = true;
 	int apd = 4;
-	int happiness = 2;
+	double happiness = 2;
 	int tax = 22;
 	int growth = 2;
 	int usage = 2;
-
+	
+	int[] techs = {0, 0, 0, 0, 0};
+	String[][] names_techs = {{"Military", "Allows recruitment of powerful units"}, {"Productivity", "Increases commands per day by 1 per level"}, {"Public Happiness", "Increases happiness by +0.5 per level"}, {"Refining", "Allows processing of advanced mined resources"}, {"Population Growth", "Increase population growth by +1% per level"}};
+	int[] max_techs = {4, 3, 3, 2, 4};
+	int[][] costs_techs = {{700, 2000, 4800, 10000}, {500, 4000, 10000}, {5000, 11000, 31000}, {6000, 12000}, {4000, 9000, 13000, 28000}};
+	int[][] req_techs = {{1, 2, 3, 4}, {-1, -1, -1}, {-1, -1, -1}, {-1, 4}, {-1, -1, -1, -1}};
+	int[][] time_techs = {{2, 5, 8, 12}, {1, 2, 3}, {2, 4, 5}, {2, 5}, {2, 4, 6, 8}};
+	int counter_techs = 0;
+	int[] pending_techs = null;
+	
+	int[] buildings = {0, 0, 0, 0, 0};
+	String[][] names_buildings = {{"Research Lab", "Allows new technologies to be researched"}, {"Barracks", "Allows training and recruitment of infantry-type units"}, {"Armored Vehicle Factory", "Allows construction and recruitment tank-type units"}, {"Airfield", "Allow construction and recruitment of air-based units"}, {"Radiology Lab", "Allows research into radioactive materials and their properties"}};
+	int[][] costs_buildings = {{50, 80, 0}, {150, 100, 0}, {2500, 500, 150}, {6000, 1000, 500}, {6000, 1000, 500}};
+	
 	int[] tiers = {0, 100, 300, 800, 12000, 30000, 60000, 120000};
 	int getTier() {
 
@@ -1033,6 +1046,32 @@ public class DiegoLand {
 		}
 		
 	}
+	
+	void cmd_techs() {
+		
+		System.out.println("TECHS");
+		for (int i = 0; i < names_techs.length; i++) {
+			
+			System.out.print(names_techs[i][0] + ": ");
+			if (techs[i] != 0) {
+				
+				String[] fancy = {"I", "II", "III", "IV"};
+				System.out.print(names_techs[i][0] + " " + fancy[techs[i]] + "\n");
+				
+			} else {
+				
+				System.out.print("No advancements yet...\n");
+				
+			}
+			
+		}
+		if (buildings[0] == 0) {
+			
+			System.out.println("Construct the RESEARCH LAB first to research techs!");
+			
+		}
+		
+	}
 
 	// COMMAND HANDLER
 
@@ -1100,6 +1139,12 @@ public class DiegoLand {
 			cmd_clearland();
 			break;
 			
+		case "TECHS":
+		case "RESEARCH":
+		case "T":
+			cmd_techs();
+			break;
+			
 		case "HELP":
 		case "COMMANDS":
 		case "H":
@@ -1111,6 +1156,7 @@ public class DiegoLand {
 			System.out.println("STATS- view in-game stats");
 			System.out.println("RESOURCESN- view natural resources");
 			System.out.println("CLEARLAND- convert land to cleared land");
+			System.out.println("TECHS- view/research technologies");
 			System.out.println("PASS- skip day");
 			if (getTier() != 1) {
 				
@@ -1274,7 +1320,8 @@ public class DiegoLand {
 				System.out.print(shorts[i] + " " + rsc[i] + " (" + sign + rsc_change[i] + ")   ");
 				
 			}
-			System.out.println("\nHappiness: " + happiness);
+			String sign = (happiness >= 0) ? "+" : "";
+			System.out.println("\nHappiness: " + sign + happiness);
 			System.out.println();
 			System.out.println("Press ENTER to save and continue to DAY " + (day + 1) + "...");
 			if (scan.nextLine().equals("DELETE")) {
@@ -1367,7 +1414,7 @@ int data_debug = 0;
 		save.Save(growth, writer);
 		save.Save(tax, writer);
 		save.Save(usage, writer);
-		save.Save(happiness, writer);
+		save.Save(happiness * 2, writer);
 
 		writer.flush();
         writer.close();
@@ -1458,7 +1505,7 @@ int data_debug = 0;
 					
 				} else if (count == 16) {
 					
-					happiness = int_data[0];
+					happiness = int_data[0] / 2.0;
 					
 				}
 				
