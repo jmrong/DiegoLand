@@ -45,13 +45,15 @@ public class DiegoLand {
 	int[][] costs_techs = {{700, 2000, 4800, 10000}, {500, 4000, 10000}, {5000, 11000, 31000}, {6000, 12000}, {4000, 9000, 13000, 28000}};
 	int[][] req_techs = {{1, 2, 3, 4}, {-2, -3, -4}, {-3, -5, -6}, {-4, 4}, {-2, -3, -5, -6}};
 	int[][] time_techs = {{2, 5, 8, 12}, {1, 2, 3}, {2, 4, 5}, {2, 5}, {2, 4, 6, 8}};
-	int counter_techs = 0;
-	int[] pending_techs = null;
+	int counter_techs = -1;
+	int pending_techs = -1;
+	String[] fancy = {"I", "II", "III", "IV"};
 	
 	int[] buildings = {0, 0, 0, 0, 0};
 	String[][] names_buildings = {{"Research Lab", "Allows new technologies to be researched"}, {"Barracks", "Allows training and recruitment of infantry-type units"}, {"Armored Vehicle Factory", "Allows construction and recruitment tank-type units"}, {"Airfield", "Allow construction and recruitment of air-based units"}, {"Radiology Lab", "Allows research into radioactive materials and their properties"}};
-	int[][] costs_buildings = {{50, 80, 0}, {150, 100, 0}, {2500, 500, 150}, {6000, 1000, 500}, {6000, 1000, 500}};
+	int[][] costs_buildings = {{100, 80, 0}, {400, 100, 0}, {2500, 500, 150}, {6000, 1000, 500}, {6000, 1000, 500}};
 	int[] req_buildings = {0, 3, 3, 5, 6, 6};
+	int[] time_buildings = {2, 4, 7, 15, 21};
 	
 	int[] tiers = {0, 100, 300, 800, 12000, 30000, 60000, 120000};
 	int getTier() {
@@ -679,7 +681,7 @@ public class DiegoLand {
 							}
 							System.out.println("Collected " + choice + " output(s) from " + factory_templates[index - 1].name + " x " + factories[index - 1]);
 							System.out.println("You now have " + left);
-							factories_lastCollected[index - 1] = 0;
+							factories_lastCollected[index - 1] -= factory_templates[index - 1].time * choice;
 							time++;
 							
 						}
@@ -736,7 +738,11 @@ public class DiegoLand {
 								
 							}
 							factories[index - 1] -= choice;
-							factories_lastCollected[index - 1] = 0;
+							if (choice == factories_lastCollected[index - 1] / factory_templates[index - 1].time) {
+								
+								factories_lastCollected[index - 1] = 0;
+							
+							}	
 							System.out.println("Sold " + choice + " x " + factory_templates[index - 1].name + " " + "(" + factories[index - 1] + " remaining)");
 							System.out.println("You now have " + _back);
 							time++;
@@ -767,15 +773,7 @@ public class DiegoLand {
 			System.out.println("Tax income: " + tax);
 			
 		}
-		if (usage >= 0) {
-	
-			System.out.println("Growth food usage: +" + usage);
-			
-		} else {
-			
-			System.out.println("Growth food usage: " + usage);
-			
-		}
+		System.out.println("Growth food usage: " + usage);
 		if (happiness >= 0) {
 			
 			System.out.println("Happiness: +" + happiness);
@@ -1040,7 +1038,7 @@ public class DiegoLand {
 				rsc_land[choice - 1] -= land;
 				rsc_land[4] += land;
 				rsc[0] -= land * costs[choice - 1];
-				System.out.println("Converted " + land + " " + names_land[choice - 1] + " to Cleared Land (you now have " + rsc_land[4] + ") for $" + (land * costs[choice - 1]));
+				System.out.println("Converted " + land + " " + names_land[choice - 1] + " to Cleared Land (you now have " + rsc_land[4] + ") for $" + (land * costs[choice - 1]) + " (you now have $" + rsc[0] + ")");
 				
 			}
 			
@@ -1051,17 +1049,35 @@ public class DiegoLand {
 	void cmd_techs() {
 		
 		System.out.println("TECHS");
+		boolean valid = false;
 		for (int i = 0; i < names_techs.length; i++) {
 			
 			System.out.print(names_techs[i][0] + ": ");
 			if (techs[i] != 0) {
 				
-				String[] fancy = {"I", "II", "III", "IV"};
-				System.out.print(names_techs[i][0] + " " + fancy[techs[i]] + "\n");
+				if (techs[i] > 0) {
+					
+					if (techs[i] != max_techs[i]) {
+						
+						valid = true;
+						
+					}
+					System.out.println("Level " + fancy[techs[i] - 1]);
+					
+				} else {
+					
+					System.out.println("Currently researching...");
+					
+				}
 				
 			} else {
 				
-				System.out.print("No advancements yet...\n");
+				if (techs[i] != max_techs[i]) {
+					
+					valid = true;
+					
+				}
+				System.out.println("No advancements yet...");
 				
 			}
 			
@@ -1070,12 +1086,57 @@ public class DiegoLand {
 			
 			System.out.println("Construct the RESEARCH LAB first to research techs!");
 			
-		} else {
+		} else if (valid) {
 			
 			System.out.print("Would you like to research a tech? Y/N ");
 			if (scan.next().equalsIgnoreCase("Y")) {
 				
-				
+				int[] correspond = new int[techs.length];
+				int last = 0;
+				for (int i = 0; i < techs.length; i++) {
+					
+					if (techs[i] != max_techs[i] && techs[i] >= 0) {
+						
+						System.out.println((i + 1) + ") " + names_techs[i][0] + " " + fancy[techs[i]] + " ($" + costs_techs[i][techs[i]] + ", " + time_techs[i][techs[i]] + " day(s)): " + names_techs[i][1]);
+						correspond[last] = i;
+						last++;
+					
+					}
+						
+				}
+				System.out.print("Type # to research #, 0 to cancel: ");
+				int choice = scan.nextInt();
+				if (choice > 0 && choice <= last) {
+					
+					int index = correspond[choice - 1];
+					if (req_techs[index][techs[index]] < 0 && req_techs[index][techs[index]] * -1 > getTier()) {
+						
+						System.out.println("You must be Tier " + (req_techs[index][techs[index]] * -1) + " to research this");
+						
+					} else if (req_techs[index][techs[index]] > 0 && buildings[req_techs[index][techs[index]]] != 1) {
+						
+						System.out.println("You must have a " + names_buildings[req_techs[index][techs[index]]][0] + " to research this");
+						
+					} else if (rsc[0] < costs_techs[index][techs[index]]) {
+						
+						System.out.println("You don't have enough money");
+						
+					} else if (counter_techs != -1) {
+						
+						System.out.println("You must wait for " + names_techs[counter_techs][0] + " " + fancy[pending_techs] + " to finish researching before you can start new research (" + (techs[counter_techs] * -1) + " day(s))");
+						
+					} else {
+						
+						pending_techs = techs[index];
+						techs[index] = time_techs[index][techs[index]] * -1;
+						rsc[0] -= costs_techs[index][pending_techs];
+						counter_techs = index;
+						System.out.println("You are now researching " + names_techs[index][0] + " " + fancy[pending_techs] + "; it will take " + time_techs[index][pending_techs] + " day(s) to complete");
+						System.out.println("You now have $" + rsc[0]);
+						
+					}
+					
+				}
 				
 			}
 			
@@ -1086,13 +1147,14 @@ public class DiegoLand {
 	void cmd_buildings() {
 		
 		System.out.println("BUILDINGS");
+		boolean any = false;
 		for (int i = 0; i < buildings.length; i++) {
 			
 			if (buildings[i] == 1) {
 				
 				System.out.println(names_buildings[i][0] + "- " + names_buildings[i][1]);
 				
-			} else if (buildings[i] == -1) {
+			} else if (buildings[i] <= -1) {
 				
 				System.out.println(names_buildings[i][0] + "- under construction...");
 				
@@ -1104,16 +1166,102 @@ public class DiegoLand {
 					if (costs_buildings[i][j] != 0) {
 						
 						int[] relative = {0, 3, 5};
-						cost += rsc_names[relative[j]];
+						cost += costs_buildings[i][j] + " " + rsc_names[relative[j]] + " ";
 						
 					}
 					
 				}
 				System.out.println(names_buildings[i][0] + "- " + cost);
+				any = true;
+				
+			} else if (buildings[i] == 0 && req_buildings[i] == getTier() + 1) {
+				
+				System.out.println(names_buildings[i][0] + "- unlock at Tier " + (getTier() + 1));
 				
 			}
 			
 		}
+		if (any) {
+			
+			System.out.print("Would you like to construct a building? Y/N ");
+			if (scan.next().equalsIgnoreCase("Y")) {
+				
+				System.out.print("Which of the above buildings would you like to construct? ");
+				scan.nextLine();
+				String name = scan.nextLine();
+				boolean found = false;
+				for (int i = 0; i < names_buildings.length && !found; i++) {
+					
+					if (name.equalsIgnoreCase(names_buildings[i][0])) {
+						
+						found = true;
+						if (req_buildings[i] > getTier()) {
+							
+							System.out.println("You must be Tier " + req_buildings[i] + " to construct this");
+							System.out.println("BUILDINGS cancelled");
+							
+						} else if (buildings[i] != 0) {
+							
+							System.out.println("You already have this building");
+							System.out.println("BUILDINGS cancelled");
+							
+						} else {
+							
+							boolean valid = true;
+							for (int j = 0; j < costs_buildings[i].length && valid; j++) {
+								
+								int[] relative = {0, 3, 5};
+								if (rsc[relative[j]] < costs_buildings[i][j]) {
+									
+									valid = false;
+									
+								}
+								
+							}
+							if (!valid) {
+								
+								System.out.println("You don't have enough resources");
+								System.out.println("BUILDINGS cancelled");
+								
+							} else if (rsc_land[4] == 0) {
+							
+								System.out.println("You don't have enough land (buildings require 1 Cleared Land to build)");
+								System.out.println("BUILDINGS cancelled");
+							
+							} else {
+								
+								String left = "";
+								buildings[i] = time_buildings[i] * -1;
+								for (int j = 0; j < costs_buildings[i].length; j++) {
+									
+									int[] relative = {0, 3, 5};
+									rsc[relative[j]] -= costs_buildings[i][j];
+									left += rsc[relative[j]] + " " + rsc_names[relative[j]] + " ";
+									
+								}
+								rsc_land[4]--;
+								System.out.println("A " + names_buildings[i][0] + " is now under construction; it will be complete in " + time_buildings[i] + " days");
+								System.out.println("You now have " + left);
+								time++;
+								
+							}
+							
+						}
+						
+					}
+					
+				}
+				if (!found) {
+					
+					System.out.println("Building not found");
+					System.out.println("BUILDINGS cancelled");
+					
+				}
+				
+			}
+			
+		}
+		
 		
 	}
 
@@ -1153,7 +1301,7 @@ public class DiegoLand {
 		
 		case "PASS":
 		case "P":
-			System.out.println("Day passed!");
+			System.out.println("Day passed!\n");
 			System.out.println("***");
 			time = apd;
 			break;
@@ -1252,7 +1400,7 @@ public class DiegoLand {
 
 			if (announce) {
 				
-				String[] features = {"-Consumer goods production unlocked\n-Metal production unlocked\n-Expand borders unlocked", "-Consumer goods population requirement\n-Military unlocked\n-Ammunition production unlocked", "-Expeditions unlocked\n! WARS UNLOCKED", "-Fuel production unlocked", "-???", "-Uranium production unlocked", "-You have reached the population cap! Great job!"};
+				String[] features = {"-Consumer goods production unlocked\n-Metal production unlocked\n-Expand borders unlocked", "-Consumer goods population requirement\n-Military unlocked\n-Ammunition production unlocked", "-Expeditions unlocked\n! WARS UNLOCKED (run MILITARY for more important info) !", "-Fuel production unlocked", "-???", "-Uranium production unlocked", "-You have reached the population cap! Great job!"};
 				System.out.println("*** TIER " + getTier() + " UNLOCKED!!! ***");
 				System.out.println("New Features:");
 				System.out.println(features[getTier() - 2]);
@@ -1308,7 +1456,11 @@ public class DiegoLand {
 				
 			}
 			int oldTier = getTier();
-			population += growth;
+			if (population + growth <= tiers[tiers.length - 1]) {
+				
+				population += growth;
+			
+			}	
 			if (getTier() > oldTier) {
 				
 				announce = true;
@@ -1374,6 +1526,46 @@ public class DiegoLand {
 			String sign = (happiness >= 0) ? "+" : "";
 			System.out.println("\nHappiness: " + sign + happiness);
 			System.out.println();
+			for (int i = 0; i < buildings.length; i++) {
+				
+				if (buildings[i] <= -1) {
+					
+					buildings[i]++;
+					if (buildings[i] == 0) {
+						
+						buildings[i] = 1;
+						System.out.println("Your " + names_buildings[i][0] + " is now complete!");
+						System.out.println();
+						
+					} else {
+						
+						System.out.println("Your " + names_buildings[i][0] + " still has " + (buildings[i] * -1) + " day(s) of construction left");
+						System.out.println();
+						
+					}
+					
+				}
+				
+			}
+			if (counter_techs != -1) {
+				
+				techs[counter_techs]++;
+				if (techs[counter_techs] == 0) {
+					
+					techs[counter_techs] = pending_techs + 1;
+					System.out.println("You have finished researching " + names_techs[counter_techs][0] + " " + fancy[pending_techs] + "!");
+					counter_techs = -1;
+					pending_techs = -1;
+					System.out.println();
+					
+				} else {
+					
+					System.out.println("You have " + (techs[counter_techs] * -1) + " day(s) left to finish researching " + names_techs[counter_techs][0] + " " + fancy[pending_techs]);
+					System.out.println();
+					
+				}
+				
+			}
 			System.out.println("Press ENTER to save and continue to DAY " + (day + 1) + "...");
 			if (scan.nextLine().equals("DELETE")) {
 				
@@ -1465,7 +1657,14 @@ int data_debug = 0;
 		save.Save(growth, writer);
 		save.Save(tax, writer);
 		save.Save(usage, writer);
-		save.Save(happiness * 2, writer);
+		save.Save((int)(happiness * 2), writer);
+		
+		save.Save(techs, writer);
+		save.Save(counter_techs, writer);
+		save.Save(pending_techs, writer);
+		save.Save(buildings, writer);
+		int _announce = (!announce) ? 0 : 1;
+		save.Save(_announce, writer);
 
 		writer.flush();
         writer.close();
@@ -1493,7 +1692,7 @@ int data_debug = 0;
 					int_data[i] = Integer.parseInt(data[i]);
 				
 				}
-
+				// TO-DO turn into a switch
 				if (count == 1) {
 						
 					population = int_data[0];
@@ -1557,6 +1756,26 @@ int data_debug = 0;
 				} else if (count == 16) {
 					
 					happiness = int_data[0] / 2.0;
+					
+				} else if (count == 17) {
+					
+					techs = int_data;
+					
+				} else if (count == 18) {
+					
+					counter_techs = int_data[0];
+					
+				} else if (count == 19) {
+					
+					pending_techs = int_data[0];
+				
+				} else if (count == 20) {
+					
+					buildings = int_data;
+					
+				} else if (count == 21) {
+					
+					announce = (int_data[0] == 0) ? false : true;
 					
 				}
 				

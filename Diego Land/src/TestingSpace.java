@@ -1,6 +1,17 @@
 public class TestingSpace {
 	
-	String name;
+	
+	public static void main(String[] args) {
+		
+		System.out.println("____      ");
+		System.out.println("|   \\   ");
+		System.out.println("| |\\ |  ");
+		System.out.println("| |/ |    ");
+		System.out.println("|___/     ");
+		
+	}
+	
+	/*String name;
 	int age;
 	boolean run = true;
 	
@@ -29,7 +40,7 @@ public class TestingSpace {
 		TestingSpace t = new TestingSpace("Anish", 100);
 		t.Loop();
 		
-	}
+	}*/
 	
 }
 
