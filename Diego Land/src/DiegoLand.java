@@ -55,7 +55,7 @@ public class DiegoLand {
 	int[] req_buildings = {0, 3, 3, 5, 6, 6};
 	int[] time_buildings = {2, 4, 7, 15, 21};
 	
-	int[] tiers = {0, 100, 300, 800, 12000, 30000, 60000, 120000};
+	int[] tiers = {0, 100, 300, 800, 1500, 3200, 9000, 20000};
 	int getTier() {
 
 		int _return = -1;
@@ -110,7 +110,8 @@ public class DiegoLand {
 			new Factory(new int[][] {{0, 4}, {}, {}}, new int[] {1, 1, 4, 1}, new int[][] {{0, 6}, {}, {2, 1}}, 1, "Cactus Potter"),
 			new Factory(new int[][] {{0, 12}, {0, 1}, {}}, new int[] {1, 5, 4, 3}, new int[][] {{0, 15}, {4, 1}, {}}, 2, "Hunter"),
 			new Factory(new int[][] {{0, 10}, {2, 1}, {}}, new int[] {1, 7, 4, 5}, new int[][] {{0, 8, 3, 4}, {2, 1}, {}}, 2, "Shark Trapper"),
-			new Factory(new int[][] {{0, 10, 2, 1}, {}, {}}, new int[] {3, 4}, new int[][] {{0, 8, 3, 8, 5, 2}, {1, 1}, {}}, 2, "Jeweler"),
+			new Factory(new int[][] {{0, 10, 2, 1}, {}, {}}, new int[] {4, 4}, new int[][] {{0, 8, 3, 8, 5, 2}, {4, 1}, {}}, 2, "Jeweler"),
+			new Factory(new int[][] {{0, 15, 5, 5}, {}, {}}, new int[] {4, 18}, new int[][] {{0, 30, 3, 20, 5, 20}, {4, 1}, {}}, 2, "Automobile Factory"),
 			new Factory(new int[][] {{0, 5, 2, 3}, {}, {1, 2}}, new int[] {5, 5}, new int[][] {{0, 25, 3, 10}, {4, 1}, {}}, 1, "Iron Smelter"),
 			new Factory(new int[][] {{0, 6, 2, 4}, {}, {2, 2}}, new int[] {5, 8}, new int[][] {{0, 28, 3, 15}, {4, 1}, {}}, 1, "Copper Mine"),
 			new Factory(new int[][] {{0, 8, 2, 5, 5, 1}, {}, {3, 2}}, new int[] {6, 15}, new int[][] {{0, 30, 3, 30, 5, 10}, {4, 1}, {}}, 1, "Ammunition Factory"),
@@ -161,17 +162,17 @@ public class DiegoLand {
 
 			last = 16;
 
-		} else if (getTier() == 3) {
+		} else if (getTier() == 3 || getTier() == 4) {
 
-			last = 18;
+			last = 19;
 
-		} else if (getTier() <= 5) {
+		} else if (getTier() == 5 || getTier() == 6) {
 
-			last = 20;
+			last = 21;
 
-		} else if (getTier() <= 7) {
+		} else if (getTier() >= 7) {
 
-			last = 22;
+			last = 23;
 
 		}
 		for (int i = 0; i < last; i++) {
@@ -763,7 +764,7 @@ public class DiegoLand {
 		
 		System.out.println("STATS");
 		System.out.println("Population: " + population + " (+" + growth + ")");
-		System.out.println("Tier: " + getTier());
+		System.out.println("Tier: " + getTier() + " (next tier: " + (getTier()  + 1) + ", " + tiers[getTier()] + " pop.)");
 		if (tax >= 0) {
 			
 			System.out.println("Tax income: +" + tax);
@@ -956,6 +957,164 @@ public class DiegoLand {
 		
 	}
 	
+	void cmd_expedition() {
+		
+		System.out.println("EXPEDITION");
+		System.out.println("This will give you 25 pieces of a land type of your choice.\nHOWEVER, UNLIKE EXPAND BORDERS, IT HAS A CHANCE TO DISCOVER AN ENEMY KINGDOM AND INITIATE A WAR.");
+		System.out.println("Price: 4,800 Money 620 Food 125 Power 125 Building Materials 80 Consumer Goods");
+		System.out.print("Continue? Y/N ");
+		if (!scan.next().equalsIgnoreCase("Y")) {
+			
+			System.out.println("EXPEDITION cancelled");
+			
+		} else if (rsc[0] < 4800 || rsc[1] < 620 || rsc[2] < 125 || rsc[3] < 125 || rsc[4] < 80) {
+			
+			System.out.println("You don't have enough resources");
+			System.out.println("EXPEDITION cancelled");
+			
+		} else {
+			
+			System.out.print("Would you like to scout for 1) Forest, 2) Desert, 3) Lake, or 4) Grassland? ");
+			int choice = scan.nextInt();
+			if (choice < 1 || choice > 4) {
+				
+				System.out.println("Invalid value entered");
+				System.out.println("EXPEDITION cancelled");
+				
+			} else {
+				
+				rsc[0] -= 4800;
+				rsc[1] -= 620;
+				rsc[2] -= 125;
+				rsc[3] -= 125;
+				rsc[4] -= 80;
+				System.out.println("Scouting for " + names_land[choice - 1] + "...");
+				int[] fauna_change = new int[rsc_fauna.length];
+				int[] flora_change = new int[rsc_flora.length];
+				int[] mined_change = new int[rsc_mined.length];
+				rsc_land[choice - 1] += 25;
+		
+				// i = land type, j = land tile #, k = rsc #, l = rsc land #, m = # of rsc, n = rsc gen min
+		
+				for (int i = choice - 1; i < choice; i++) {
+		
+					for (int j = 0; j < 25; j++) {
+		
+						for (int k = 0; k < stats_fauna.length; k++) {
+		
+							for (int l = 0; l < stats_fauna[k].length; l += 4) {
+		
+								if (stats_fauna[k][l] == (double)i) {
+		
+									double random = rand.nextDouble();
+									if (random < stats_fauna[k][l + 1]) {
+		
+										Double m = new Double(stats_fauna[k][l + 3] + 1 - stats_fauna[k][l + 2]);
+										Double n = new Double(stats_fauna[k][l + 2]);
+										int add = rand.nextInt(m.intValue()) + n.intValue();
+										rsc_fauna[k] += add;
+										fauna_change[k] += add;
+		
+									}
+		
+								}
+		
+							}
+		
+						}
+		
+						for (int k = 0; k < stats_flora.length; k++) {
+		
+							for (int l = 0; l < stats_flora[k].length; l += 4) {
+		
+								if (stats_flora[k][l] == (double)i) {
+		
+									double random = rand.nextDouble();
+									if (random < stats_flora[k][l + 1]) {
+		
+										Double m = new Double(stats_flora[k][l + 3] + 1 - stats_flora[k][l + 2]);
+										Double n = new Double(stats_flora[k][l + 2]);
+										int add = rand.nextInt(m.intValue()) + n.intValue();
+										rsc_flora[k] += add;
+										flora_change[k] += add;
+		
+									}
+		
+								}
+		
+							}
+		
+						}
+		
+						for (int k = 0; k < stats_mined.length; k++) {
+		
+							for (int l = 0; l < stats_mined[k].length; l += 4) {
+		
+								if (stats_mined[k][l] == (double)i) {
+		
+									if (rand.nextDouble() < stats_mined[k][l + 1]) {
+		
+										Double m = new Double(stats_mined[k][l + 3] + 1 - stats_mined[k][l + 2]);
+										Double n = new Double(stats_mined[k][l + 2]);
+										int add = rand.nextInt(m.intValue()) + n.intValue();
+										rsc_mined[k] += add;
+										mined_change[k] += add;
+		
+									}
+		
+								}
+		
+							}
+		
+						}
+		
+					}
+		
+				}
+			
+				System.out.println();
+				System.out.println("Your search party discovered new resources and you now have: ");
+				System.out.println("Land:  | " + rsc_land[choice - 1] + " " + names_land[choice - 1] + " (+25) | ");
+				System.out.print("Fauna: | ");
+				for (int i = 0; i < rsc_fauna.length; i++) {
+		
+					if (fauna_change[i] != 0) {
+						
+						System.out.print(rsc_fauna[i] + " " + names_fauna[i] + " (+" + fauna_change[i] + ") | ");
+						
+					}
+		
+				}
+				System.out.println();
+				System.out.print("Flora: | ");
+				for (int i = 0; i < rsc_flora.length; i++) {
+					
+					if (flora_change[i] != 0) {
+						
+						System.out.print(rsc_flora[i] + " " + names_flora[i] + " (+" + flora_change[i] + ") | ");
+		
+					}
+						
+				}
+				System.out.println();
+				System.out.print("Mined: | ");
+				for (int i = 0; i < rsc_mined.length; i++) {
+		
+					if (mined_change[i] != 0) {
+					
+						System.out.print(rsc_mined[i] + " " + names_mined[i] + " (+" + mined_change[i] + ") | ");
+		
+					}
+						
+				}
+				System.out.println("");
+				
+			}
+			
+		}
+		
+	}
+	
 	// pending merge with a more generalized command
 	void cmd_create_division() {
 		
@@ -1060,9 +1219,13 @@ public class DiegoLand {
 					if (techs[i] != max_techs[i]) {
 						
 						valid = true;
+						System.out.println("Level " + fancy[techs[i] - 1]);
+						
+					} else {
+						
+						System.out.println("Level " + fancy[techs[i] - 1] + " (MAX)");
 						
 					}
-					System.out.println("Level " + fancy[techs[i] - 1]);
 					
 				} else {
 					
@@ -1097,7 +1260,7 @@ public class DiegoLand {
 					
 					if (techs[i] != max_techs[i] && techs[i] >= 0) {
 						
-						System.out.println((i + 1) + ") " + names_techs[i][0] + " " + fancy[techs[i]] + " ($" + costs_techs[i][techs[i]] + ", " + time_techs[i][techs[i]] + " day(s)): " + names_techs[i][1]);
+						System.out.println((last + 1) + ") " + names_techs[i][0] + " " + fancy[techs[i]] + " ($" + costs_techs[i][techs[i]] + ", " + time_techs[i][techs[i]] + " day(s)): " + names_techs[i][1]);
 						correspond[last] = i;
 						last++;
 					
@@ -1240,7 +1403,7 @@ public class DiegoLand {
 									
 								}
 								rsc_land[4]--;
-								System.out.println("A " + names_buildings[i][0] + " is now under construction; it will be complete in " + time_buildings[i] + " days");
+								System.out.println("A(n) " + names_buildings[i][0] + " is now under construction; it will be complete in " + time_buildings[i] + " days");
 								System.out.println("You now have " + left);
 								time++;
 								
@@ -1320,6 +1483,19 @@ public class DiegoLand {
 			}
 			break;
 			
+		case "EXPEDITION":
+		case "EX":
+			if (getTier() < 4) {
+				
+				System.out.println("You must be Tier 4 or above to do this...");
+				
+			} else {
+				
+				cmd_expedition();
+				
+			}
+			break;
+			
 		case "RESOURCESN":
 		case "RN":
 			cmd_resourcesn();
@@ -1344,6 +1520,10 @@ public class DiegoLand {
 			cmd_buildings();
 			break;
 			
+		case "TIME":
+			System.out.println("Time: " + time + " (remaining commands: " + (apd - time) + ")\nAPD: " + apd);
+			break;
+			
 		case "HELP":
 		case "COMMANDS":
 		case "H":
@@ -1362,6 +1542,12 @@ public class DiegoLand {
 				System.out.println("EXPANDBORDERS- expand your borders");
 				
 			}
+			if (getTier() >= 4) {
+				
+				System.out.println("EXPEDITION- launch an expedition");
+				
+			}
+			System.out.println("TIME- view current in-game time");
 			System.out.println("HELP- view this list");
 			System.out.println("Most commands have shorthand aliases (usually their first letter)");
 			System.out.println("\nStill need help? Run TIPS to see some starter tips.");
@@ -1500,15 +1686,24 @@ public class DiegoLand {
 				happiness -= 3;
 			
 			}
+			happiness += (techs[2] >= 0) ? (techs[2] * 0.5) : ((pending_techs) * 0.5);
 			int oldtax = tax;
 			int oldusage = usage;
-			tax = round(population + ((0.1 * population) * happiness));
-			growth = round(rsc[1] * 0.01);
+			tax = round(population + (happiness * population / 2));
+			if (counter_techs != 4) {
+				
+				growth = round(rsc[1] * ((techs[4] + 1) * 0.01));
+				
+			} else {
+				
+				growth = round(rsc[1] * ((pending_techs + 1) * 0.01));
+				
+			}
 			usage = round(population * 0.1);
 			rsc_change[2] = round(population * -0.05);
 			if (getTier() >= 3) {
 				
-				rsc_change[4] = round(population * 0.02);
+				rsc_change[4] = -1 * round(population * 0.02);
 				
 			}
 			rsc_change[0] = rsc_change[0] - oldtax + tax;
@@ -1554,6 +1749,11 @@ public class DiegoLand {
 					
 					techs[counter_techs] = pending_techs + 1;
 					System.out.println("You have finished researching " + names_techs[counter_techs][0] + " " + fancy[pending_techs] + "!");
+					if (counter_techs == 1) {
+						
+						apd++;
+						
+					};
 					counter_techs = -1;
 					pending_techs = -1;
 					System.out.println();
