@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
@@ -15,8 +14,8 @@ public class CSVUtils {
         writeLine(w, values, separators, ' ');
     }
 
-    //https://tools.ietf.org/html/rfc4180
-    private static String followCVSformat(String value) {
+    // https://tools.ietf.org/html/rfc4180
+    private static String followCSVformat(String value) {
 
         String result = value;
         if (result.contains("\"")) {
@@ -30,7 +29,7 @@ public class CSVUtils {
 
         boolean first = true;
 
-        //default customQuote is empty
+        // default customQuote is empty
 
         if (separators == ' ') {
             separators = DEFAULT_SEPARATOR;
@@ -42,16 +41,15 @@ public class CSVUtils {
                 sb.append(separators);
             }
             if (customQuote == ' ') {
-                sb.append(followCVSformat(value));
+                sb.append(followCSVformat(value));
             } else {
-                sb.append(customQuote).append(followCVSformat(value)).append(customQuote);
+                sb.append(customQuote).append(followCSVformat(value)).append(customQuote);
             }
 
             first = false;
         }
         sb.append("\n");
         w.append(sb.toString());
-
 
     }
 

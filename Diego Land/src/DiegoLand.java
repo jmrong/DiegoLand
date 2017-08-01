@@ -1,14 +1,10 @@
-// Diego Land
+// Diego Land 1.0
 // Nation management game
 // Jack and Anish
 
 import java.util.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.math.*;
+import java.io.*;
 
 public class DiegoLand {
 	
@@ -50,10 +46,14 @@ public class DiegoLand {
 	String[] fancy = {"I", "II", "III", "IV"};
 	
 	int[] buildings = {0, 0, 0, 0, 0};
-	String[][] names_buildings = {{"Research Lab", "Allows new technologies to be researched"}, {"Barracks", "Allows training and recruitment of infantry-type units"}, {"Armored Vehicle Factory", "Allows construction and recruitment tank-type units"}, {"Airfield", "Allow construction and recruitment of air-based units"}, {"Radiology Lab", "Allows research into radioactive materials and their properties"}};
+	String[][] names_buildings = {{"Research Lab", "Allows new technologies to be researched"}, {"Barracks", "Allows training and recruitment of infantry-type units"}, {"Armored Vehicle Factory", "Allows construction and recruitment of tank-type units"}, {"Airfield", "Allows construction and recruitment of air-based units"}, {"Radiology Lab", "Allows research into radioactive materials and their properties"}};
 	int[][] costs_buildings = {{100, 80, 0}, {400, 100, 0}, {2500, 500, 150}, {6000, 1000, 500}, {6000, 1000, 500}};
 	int[] req_buildings = {0, 3, 3, 5, 6, 6};
 	int[] time_buildings = {2, 4, 7, 15, 21};
+	
+	ArrayList<Division> divisions = new ArrayList<Division>();
+	War[] wars = {new War("Masekovia"), new War("Bell Republic"), new War("Goldedge"), new War("Isle of Vaktovia"), new War("Davis Land")};
+	String military_announce = "";
 	
 	int[] tiers = {0, 100, 300, 800, 1500, 3200, 9000, 20000};
 	int getTier() {
@@ -96,6 +96,7 @@ public class DiegoLand {
 		double[][] stats_mined = {{0, 0.6, 3, 20, 1, 0.65, 3, 20, 2, 0.1, 2, 20, 3, 0.35, 3, 12}, {0, 0.3, 2, 15, 1, 0.65, 1, 18, 3, 0.3, 1, 10}, {0, 0.25, 3, 12, 1, 0.35, 3, 12, 3, 0.1, 2, 8}, {0, 0.4, 5, 35, 1, 0.55, 5, 45, 2, 0.3, 5, 35, 3, 0.1, 5, 30}, {0, 0.1, 3, 8, 1, 0.5, 5, 45, 2, 0.05, 3, 14, 3, 0.3, 3, 10}, {0, 0.05, 3, 30, 1, 0.2, 3, 40, 2, 0.5, 3, 12, 3, 0.05, 3, 20}, {1, 0.9, 3, 35}, {1, 0.3, 3, 18, 2, 0.3, 1, 25}, {0, 0.3, 3, 20, 3, 0.1, 3, 15}, {0, 0.03, 1, 5, 1, 0.08, 1, 8, 2, 0.01, 1, 4, 3, 0.02, 1, 5}};
 
 	// FACTORIES
+	
 	Factory[] factory_templates = {
 			new Factory(new int[][] {{0, 3}, {}, {}}, new int[]{1, 2}, new int[][] {{0, 10}, {}, {0, 1}}, 2, "Berry Picker"),
 			new Factory(new int[][] {{0, 4}, {1, 1}, {}}, new int[] {1, 4}, new int[][] {{0, 10}, {2, 1}, {}}, 1, "Salmon Fisher"),
@@ -124,7 +125,7 @@ public class DiegoLand {
 	int[] factories = new int[factory_templates.length];
 	int[] factories_lastCollected = new int[factory_templates.length];
 	
-	List<Division> divisions = new ArrayList<Division>();
+	//List<Division> divisions = new ArrayList<Division>();
 
 	// ALL COMMANDS
 
@@ -144,6 +145,7 @@ public class DiegoLand {
 			System.out.println("There are many different commands that perform various actions.");
 			System.out.println("You can view all unlocked commands with the HELP command, or view some basic starting tips with TIPS.");
 			System.out.println("Your next step should be constructing some factories to help you gain food.");
+			System.out.println("Keep on building your Diego Land, and grow your population tier by tier (the next tier is Tier 2 at 100 population).");
 			System.out.println("Good luck!");
 
 		}
@@ -168,11 +170,27 @@ public class DiegoLand {
 
 		} else if (getTier() == 5 || getTier() == 6) {
 
-			last = 21;
+			if (techs[3] == 1) {
+				
+				last = 21;
 
+			} else {
+				
+				last = 19;
+				
+			}
+				
 		} else if (getTier() >= 7) {
 
-			last = 23;
+			if (techs[3] == 2) {
+				
+				last = 23;
+
+			} else {
+				
+				last = 21;
+				
+			}
 
 		}
 		for (int i = 0; i < last; i++) {
@@ -1115,24 +1133,46 @@ public class DiegoLand {
 		
 	}
 	
-	// pending merge with a more generalized command
-	void cmd_create_division() {
+	// command CREATEDIVISION removed in favor of the more general DIVISION command
+	
+	void cmd_status() {
 		
-		Unit[] units = new Unit[10];
-		System.out.println("This is the Division Creation Commmand, hit ENTER to get started!");
-		scan.nextLine();
-		for (int i = 0; i < 10; i++) {
+		System.out.println("MILITARY STATUS");
+		boolean none = true;
+		boolean all = true;
+		System.out.print("Current status: ");
+		for (War war : wars) {
 			
-			System.out.println("\nEnter type for Unit:");
-			System.out.print("Type(Infantry, Medic, Sniper): ");
-			String type = scan.nextLine();
-			units[i] = new Unit(type);
-			System.out.println("Unit succesfully added!");
+			if (war.active) {
+				
+				none = false;
+				System.out.println("In war with " + war.name.toUpperCase() + " (war score is " + war.score[0] + "-" + war.score[1] + ")");
+				System.out.println();
+				
+			} else {
+				
+				if (war.score[0] != 5) {
+					
+					all = false;
+					
+				}
+				
+			}
 			
 		}
-		String name = "Name";
-		Division d = new Division(units, name);
-		divisions.add(d);
+		if (none) {
+			
+			if (!all) {
+				
+				System.out.println("Not in war (yet)...");
+				
+			} else {
+				
+				System.out.println("You rule the world");
+				
+			}
+			
+		}
 		
 	}
 	
@@ -1427,6 +1467,18 @@ public class DiegoLand {
 		
 		
 	}
+	
+	void cmd_divisions() {
+		
+		System.out.println(divisions.toString());
+		
+	}
+	
+	void cmd_recruit() {
+		
+		
+		
+	}
 
 	// COMMAND HANDLER
 
@@ -1456,10 +1508,6 @@ public class DiegoLand {
 		case "STATS":
 		case "S":
 			cmd_stats();
-			break;
-			
-		case "CREATEDIVISION":
-			cmd_create_division();
 			break;
 		
 		case "PASS":
@@ -1524,6 +1572,47 @@ public class DiegoLand {
 			System.out.println("Time: " + time + " (remaining commands: " + (apd - time) + ")\nAPD: " + apd);
 			break;
 			
+		case "STATUS":
+		case "MILITARY":
+		case "M":
+			if (getTier() < 3) {
+				
+				System.out.println("You must be Tier 3 or above to do this...");
+				
+			} else {
+				
+				cmd_status();
+			
+			}	
+			break;
+			
+		case "DIVISIONS":
+		case "D":
+		case "UNITS":
+			if (getTier() < 3) {
+				
+				System.out.println("You must be Tier 3 or above to do this...");
+				
+			} else {
+				
+				cmd_divisions();
+			
+			}	
+			break;
+			
+		case "RECRUIT":
+		case "RC":
+			if (getTier() < 3) {
+				
+				System.out.println("You must be Tier 3 or above to do this...");
+				
+			} else {
+				
+				cmd_recruit();
+			
+			}	
+			break;
+			
 		case "HELP":
 		case "COMMANDS":
 		case "H":
@@ -1545,6 +1634,13 @@ public class DiegoLand {
 			if (getTier() >= 4) {
 				
 				System.out.println("EXPEDITION- launch an expedition");
+				
+			}
+			if (getTier() >= 3) {
+				
+				System.out.println("STATUS- view your military's current status");
+				System.out.println("DIVISIONS- view, create, and manage your divisions/units");
+				System.out.println("RECRUIT- recruit units");
 				
 			}
 			System.out.println("TIME- view current in-game time");
@@ -1586,7 +1682,7 @@ public class DiegoLand {
 
 			if (announce) {
 				
-				String[] features = {"-Consumer goods production unlocked\n-Metal production unlocked\n-Expand borders unlocked", "-Consumer goods population requirement\n-Military unlocked\n-Ammunition production unlocked", "-Expeditions unlocked\n! WARS UNLOCKED (run MILITARY for more important info) !", "-Fuel production unlocked", "-???", "-Uranium production unlocked", "-You have reached the population cap! Great job!"};
+				String[] features = {"-Consumer goods production unlocked\n-Metal production unlocked\n-Expand borders unlocked", "-Consumer goods population requirement\n-Military unlocked\n-Ammunition production unlocked", "-Expeditions unlocked\n! WARS UNLOCKED (run STATUS for more important info) !", "-Fuel production unlocked", "-???", "-Uranium production unlocked", "-You have reached the population cap! Great job!"};
 				System.out.println("*** TIER " + getTier() + " UNLOCKED!!! ***");
 				System.out.println("New Features:");
 				System.out.println(features[getTier() - 2]);
@@ -1600,6 +1696,11 @@ public class DiegoLand {
 				System.out.println("***");
 				System.out.println();
 				announce = false;
+				if (getTier() == 3) {
+					
+					military_announce = "Welcome to your Diego Land's military!\nSince you have grown so far from the beginning, other neighboring nations are starting to perceive you as a potential threat.\nIt is now your job to defend your land from their attacks, and conquer these rivals.\nBefore wars unlock at Tier 4, you must build up your military by recruiting UNITS.\nUNITS are organized into 10-unit DIVISIONS, and these DIVISIONS are what fight for you.\nStart off by recruiting a UNIT using the RECRUIT command.\nThe command will walk you through purchasing one of the several kinds of UNITS, ";
+					
+				}
 				
 			} else {
 				
@@ -1789,11 +1890,21 @@ public class DiegoLand {
 					tax = 22;
 					growth = 2;
 					usage = 2;
+					techs = new int[5];
+					pending_techs = -1;
+					counter_techs = -1;
+					announce = false;
+					buildings = new int[5];
+					wars = new War[]{new War("Masekovia"), new War("Bell Republic"), new War("Goldedge"), new War("Isle of Vaktovia"), new War("Davis Land")};
+					divisions = new ArrayList<Division>();
 					try {
 						
 						saveData();
 						System.out.println("Data deleted! Please restart game...");
-						System.exit(-1);
+						System.out.println();
+						System.out.println("***");
+						System.out.println();
+						System.exit(0);
 						
 					} catch (IOException e) {
 						
@@ -1830,7 +1941,7 @@ public class DiegoLand {
 	
 	// SAVE/LOAD
 	
-int data_debug = 0;
+	int data_debug = 0;
 	
 	void saveData() throws IOException {
 		
@@ -1865,6 +1976,10 @@ int data_debug = 0;
 		save.Save(buildings, writer);
 		int _announce = (!announce) ? 0 : 1;
 		save.Save(_announce, writer);
+		
+		save.Save(military_announce, writer);
+		save.Save(wars, writer);
+		save.Save(divisions, writer);
 
 		writer.flush();
         writer.close();
@@ -1875,7 +1990,7 @@ int data_debug = 0;
 		
 		String csvFile = "save.csv";
 		String line = "";
-		String cvsSplitBy = ",";
+		String csvSplitBy = ",";
 
 		try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
 			
@@ -1884,98 +1999,187 @@ int data_debug = 0;
 				
 				count++;
 				// use comma as separator
-				String[] data = line.split(cvsSplitBy);
-				int[] int_data = new int[data.length];
+				String[] data = line.split(csvSplitBy);
 				
-				for (int i = 0; i < int_data.length; i++) {
+				if (count < 23) {
 					
-					int_data[i] = Integer.parseInt(data[i]);
-				
-				}
-				// TO-DO turn into a switch
-				if (count == 1) {
+					int[] int_data = new int[data.length];
+					for (int i = 0; i < int_data.length; i++) {
 						
-					population = int_data[0];
+						if (count != 22) {
+							
+							int_data[i] = Integer.parseInt(data[i]);
+						
+						}
+							
+					}
+					// TO-DO turn into a switch
+					if (count == 1) {
+							
+						population = int_data[0];
+						
+					} else if (count == 2) {
+						
+						day = int_data[0];
 					
-				} else if (count == 2) {
+					} else if (count == 3) {
+						
+						data_debug = int_data[0];
 					
-					day = int_data[0];
+					} else if (count == 4) {
+						
+						apd = int_data[0];
+						
+					} else if (count == 5) {
+						
+						rsc = int_data;
+						
+					} else if (count == 6) {
+						
+						rsc_land = int_data;
+						
+					} else if (count == 7) {
+						
+						rsc_fauna = int_data;
+						
+					} else if (count == 8) {
+						
+						rsc_flora = int_data;
+						
+					} else if (count == 9) {
+						
+						rsc_mined = int_data;
+						
+					} else if (count == 10) {
+						
+						factories = int_data;
+						
+					} else if (count == 11) {
+						
+						factories_lastCollected = int_data;
+						
+					} else if (count == 12) {
+						
+						rsc_change = int_data;
+						
+					} else if (count == 13) {
+						
+						growth = int_data[0];
+						
+					} else if (count == 14) {
+						
+						tax = int_data[0];
+						
+					} else if (count == 15) {
+						
+						usage = int_data[0];
+						
+					} else if (count == 16) {
+						
+						happiness = int_data[0] / 2.0;
+						
+					} else if (count == 17) {
+						
+						techs = int_data;
+						
+					} else if (count == 18) {
+						
+						counter_techs = int_data[0];
+						
+					} else if (count == 19) {
+						
+						pending_techs = int_data[0];
+					
+					} else if (count == 20) {
+						
+						buildings = int_data;
+						
+					} else if (count == 21) {
+						
+						announce = (int_data[0] == 0) ? false : true;
+						
+					} else if (count == 22) {
+						
+						military_announce = data[0];
+						
+					}
+					
+				} else if (count == 23) {
 				
-				} else if (count == 3) {
-					
-					data_debug = int_data[0];
+					int _count = 0;
+					int active = -1;
+					for (int i = 0; i < 25; i += 5) {
+						
+						wars[_count].probability = Double.parseDouble(data[i]);
+						wars[_count].name = data[i + 1];
+						wars[_count].score[0] = Integer.parseInt(data[i + 2]);
+						wars[_count].score[1] = Integer.parseInt(data[i + 3]);
+						wars[_count].active = Boolean.parseBoolean(data[i + 4]);
+						if (wars[_count].active) {
+							
+							active = _count;
+							
+						}
+						_count++;
+						
+					}
+					if (active != -1) {
+						
+						int i = 25;
+						String cur = "";
+						while (cur != ">") {
+							
+							cur = data[i];
+							Division add = new Division(cur);
+							_count = 0;
+							for (int j = 1; j < 21; j += 2) {
+								
+								add.units[_count] = new Unit(Integer.parseInt(data[i + j]), Integer.parseInt(data[i + j + 1]));
+								
+							}
+							wars[active].attack.add(add);
+							i += 21;
+							
+						}
+						i++;
+						Division def = new Division(data[i]);
+						for (int j = 1; j < 21; j += 2) {
+							
+							def.units[_count] = new Unit(Integer.parseInt(data[i + j]), Integer.parseInt(data[i + j + 1]));
+							
+						}
+						wars[active].defense = def;
+						i += 22;
+						while (i != data.length) {
+							
+							wars[active].reserves.add(new Unit(Integer.parseInt(data[i]), Integer.parseInt(data[i + 1])));
+							i += 2;
+							
+						}
+						
+					}
 				
-				} else if (count == 4) {
+				} else {
 					
-					apd = int_data[0];
-					
-				} else if (count == 5) {
-					
-					rsc = int_data;
-					
-				} else if (count == 6) {
-					
-					rsc_land = int_data;
-					
-				} else if (count == 7) {
-					
-					rsc_fauna = int_data;
-					
-				} else if (count == 8) {
-					
-					rsc_flora = int_data;
-					
-				} else if (count == 9) {
-					
-					rsc_mined = int_data;
-					
-				} else if (count == 10) {
-					
-					factories = int_data;
-					
-				} else if (count == 11) {
-					
-					factories_lastCollected = int_data;
-					
-				} else if (count == 12) {
-					
-					rsc_change = int_data;
-					
-				} else if (count == 13) {
-					
-					growth = int_data[0];
-					
-				} else if (count == 14) {
-					
-					tax = int_data[0];
-					
-				} else if (count == 15) {
-					
-					usage = int_data[0];
-					
-				} else if (count == 16) {
-					
-					happiness = int_data[0] / 2.0;
-					
-				} else if (count == 17) {
-					
-					techs = int_data;
-					
-				} else if (count == 18) {
-					
-					counter_techs = int_data[0];
-					
-				} else if (count == 19) {
-					
-					pending_techs = int_data[0];
-				
-				} else if (count == 20) {
-					
-					buildings = int_data;
-					
-				} else if (count == 21) {
-					
-					announce = (int_data[0] == 0) ? false : true;
+					Division add = new Division(data[0]);
+					int _count = 0;
+					for (int i = 1; i < 21; i += 2) {
+						
+						add.units[_count] = new Unit(Integer.parseInt(data[i]), Integer.parseInt(data[i + 1]));
+						_count++;
+						
+					}
+					if (add.name != "" && add.name != null) {
+						
+						System.out.println(add.name + ":");
+						divisions.add(add);
+						
+					} else {
+						
+						System.out.println("nulled");
+						
+					}
+					System.out.println(add.name + ";");
 					
 				}
 				
@@ -2157,7 +2361,7 @@ int data_debug = 0;
 	public static void main(String[] args) {
 
 		// MAIN
-
+		
 		DiegoLand game = new DiegoLand();
 
 		System.out.println();
@@ -2175,7 +2379,6 @@ int data_debug = 0;
 			if (scan.next().equalsIgnoreCase("Y")) {
 				
 				System.out.println("Loading data...");
-				game.loadData();
 				System.out.println();
 				game.GameLoop();
 				
@@ -2210,6 +2413,13 @@ int data_debug = 0;
 					game.tax = 22;
 					game.growth = 2;
 					game.usage = 2;
+					game.techs = new int[5];
+					game.pending_techs = -1;
+					game.counter_techs = -1;
+					game.announce = false;
+					game.buildings = new int[5];
+					game.wars = new War[]{new War("Masekovia"), new War("Bell Republic"), new War("Goldedge"), new War("Isle of Vaktovia"), new War("Davis Land")};
+					game.divisions = new ArrayList<Division>();
 					try {
 						
 						game.saveData();
@@ -2228,6 +2438,7 @@ int data_debug = 0;
 						e.printStackTrace();
 						
 					}
+					
 					game.GameLoop();
 					
 				}
@@ -2252,6 +2463,14 @@ int data_debug = 0;
 			game.tax = 22;
 			game.growth = 2;
 			game.usage = 2;
+			game.techs = new int[5];
+			game.pending_techs = -1;
+			game.counter_techs = -1;
+			game.announce = false;
+			game.buildings = new int[5];
+			game.wars = new War[]{new War("Masekovia"), new War("Bell Republic"), new War("Goldedge"), new War("Isle of Vaktovia"), new War("Davis Land")};
+			game.divisions = new ArrayList<Division>();
+			
 			game.resourceGen();
 	
 			game.GameLoop();

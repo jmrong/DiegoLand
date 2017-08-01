@@ -1,5 +1,6 @@
+/* this will be migrated to the driver later, I'm trying to keep all non-object code in the driver
+  
 import java.util.Random;
-
 
 public class Battle {
 	private Division d1;
@@ -108,4 +109,4 @@ public class Battle {
 		this.d2 = d2;
 	}
 	
-}
+} */
