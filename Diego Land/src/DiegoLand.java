@@ -39,7 +39,7 @@ public class DiegoLand {
 	String[][] names_techs = {{"Military", "Allows recruitment of powerful units"}, {"Productivity", "Increases commands per day by 1 per level"}, {"Public Happiness", "Increases happiness by +0.5 per level"}, {"Refining", "Allows processing of advanced mined resources"}, {"Population Growth", "Increase population growth by +1% per level"}};
 	int[] max_techs = {4, 3, 3, 2, 4};
 	int[][] costs_techs = {{700, 2000, 4800, 10000}, {500, 4000, 10000}, {5000, 11000, 31000}, {6000, 12000}, {4000, 9000, 13000, 28000}};
-	int[][] req_techs = {{1, 2, 3, 4}, {-2, -3, -4}, {-3, -5, -6}, {-4, 4}, {-2, -3, -5, -6}};
+	int[][] req_techs = {{-3, -4, -5, -6}, {-2, -3, -4}, {-3, -5, -6}, {-4, 4}, {-2, -3, -5, -6}};
 	int[][] time_techs = {{2, 5, 8, 12}, {1, 2, 3}, {2, 4, 5}, {2, 5}, {2, 4, 6, 8}};
 	int counter_techs = -1;
 	int pending_techs = -1;
@@ -51,9 +51,11 @@ public class DiegoLand {
 	int[] req_buildings = {0, 3, 3, 5, 6, 6};
 	int[] time_buildings = {2, 4, 7, 15, 21};
 	
+	int rtd = -1;
+	ArrayList<UnitPending> pending_unit = new ArrayList<UnitPending>();
 	ArrayList<Division> divisions = new ArrayList<Division>();
 	War[] wars = {new War("Masekovia"), new War("Bell Republic"), new War("Goldedge"), new War("Isle of Vaktovia"), new War("Davis Land")};
-	String military_announce = "";
+	int military_announce = 0;
 	
 	int[] tiers = {0, 100, 300, 800, 1500, 3200, 9000, 20000};
 	int getTier() {
@@ -1137,38 +1139,58 @@ public class DiegoLand {
 	
 	void cmd_status() {
 		
-		System.out.println("MILITARY STATUS");
-		boolean none = true;
-		boolean all = true;
-		System.out.print("Current status: ");
-		for (War war : wars) {
+		if (military_announce == 0) {
 			
-			if (war.active) {
+			System.out.println("MILITARY STATUS");
+			boolean none = true;
+			boolean all = true;
+			System.out.print("Current status: ");
+			for (War war : wars) {
 				
-				none = false;
-				System.out.println("In war with " + war.name.toUpperCase() + " (war score is " + war.score[0] + "-" + war.score[1] + ")");
-				System.out.println();
-				
-			} else {
-				
-				if (war.score[0] != 5) {
+				if (war.active) {
 					
-					all = false;
+					none = false;
+					System.out.println("In war with " + war.name.toUpperCase() + " (war score is " + war.score[0] + "-" + war.score[1] + ")");
+					System.out.println();
+					
+				} else {
+					
+					if (war.score[0] != 5) {
+						
+						all = false;
+						
+					}
+					
+				}
+				
+			}
+			if (none) {
+				
+				if (!all) {
+					
+					System.out.println("Not in war (yet)...");
+					
+				} else {
+					
+					System.out.println("You rule the world!");
 					
 				}
 				
 			}
 			
-		}
-		if (none) {
+		} else if (military_announce == 1) {
 			
-			if (!all) {
+			if (getTier() == 3) {
 				
-				System.out.println("Not in war (yet)...");
+				System.out.println("MILITARY TUTORIAL");
+				System.out.println("Welcome to your Diego Land's military!\nSince you have grown so far from the beginning, other neighboring nations are starting to perceive you as a potential threat.\nIt is now your job to defend your land from their attacks, and conquer your rivals.\nBefore wars unlock at Tier 4, you must build up your military by recruiting UNITS.\nUNITS are organized into 10-unit DIVISIONS, and these DIVISIONS are what fight for you.\nStart off by recruiting a UNIT using the RECRUIT command.\nThe command will walk you through purchasing one of the several kinds of UNITS and assigning it to a DIVISION.\nGood luck!");
+				military_announce = 2;
 				
-			} else {
+			} else if (getTier() == 4) {
 				
-				System.out.println("You rule the world");
+				System.out.println("WARS TUTORIAL");
+				System.out.println("Hopefully you have built up your military to a size of considerable strength.\nStarting from today, other nations will be more and more tempted to attack and declare WAR on you every day.\nEXPEDITIONS also now come at a cost- they have a chance of discovering an enemy nation and initiating a war.\nDuring WAR, the enemy will regularly send DIVISIONS to attack you.\nYou must fend off their attacks by marking one of your DIVISIONS as READY-TO-DEFEND.\nThis division will automatically fight for you should an enemy division arrive (if the enemy arrives and no DIVISION is READY-TO-DEFEND, they automatically win the battle!)\nYou can also send divisions to attack your enemy, which they will defend against.\nIf you eliminate ALL of your enemy's UNITS, you win. If you go bankrupt during a war, they win.\nOtherwise, whoever wins 3 battles claims victory with a valuable reward! Good luck!");
+				military_announce = 0;
 				
 			}
 			
@@ -1470,13 +1492,429 @@ public class DiegoLand {
 	
 	void cmd_divisions() {
 		
-		System.out.println(divisions.toString());
+		System.out.println("DIVISIONS");
+		if (divisions.size() == 0) {
+			
+			System.out.print("No divisions yet! Create a division? Y/N ");
+			if (scan.next().equalsIgnoreCase("Y")) {
+				
+				System.out.print("Name of new division: ");
+				scan.nextLine();
+				String name = scan.nextLine();
+				if (name == "") {
+					
+					System.out.println("Invalid name");
+					System.out.println("DIVISIONS cancelled");
+					
+				} else if (name.indexOf(",") != -1 || name.indexOf("\\") != -1) {
+					
+					System.out.println("Name contains invalid characters (, and \\ are not allowed)");
+					System.out.println("DIVISIONS cancelled");
+					
+				} else {
+					
+					divisions.add(new Division(name));
+					System.out.println("Created new division " + name);
+					
+				}
+				
+			} else {
+				
+				System.out.println("DIVISIONS cancelled");
+				
+			}
+			
+		} else {
+			
+			for (int i = 0; i < divisions.size(); i++) {
+			
+				String info = " empty";
+				if (divisions.get(i).length() != 0) {
+					
+					info = "";
+					int num = divisions.get(i).length();
+					boolean truncate = false;
+					if (num > 3) {
+						
+						num = 3;
+						truncate = true;
+						
+					}
+					for (int j = 0; j < num; j++) {
+						
+						info += " " + Unit.names_unit[divisions.get(i).get()[j].type];
+						
+					}
+					if (truncate) {
+						
+						info += "... [" + divisions.get(i).length() + "]";
+						
+					} else {
+						
+						info += " [" + divisions.get(i).length() + "]";
+						
+					}
+					
+				}
+				if (i == rtd) {
+					
+					System.out.println((i + 1) + ") " + divisions.get(i).name + " [RTD]:" + info);
+				
+				} else {
+					
+					System.out.println((i + 1) + ") " + divisions.get(i).name + ":" + info);
+					
+				}
+				
+			}
+			System.out.print("0 to cancel, 1 to manage, 2 to inspect, 3 to create, 4 to change ready-to-defend status: ");
+			int choice = scan.nextInt();
+			if (choice == 1) {
+				
+				System.out.print("Enter division's # to manage: ");
+				int manage = scan.nextInt();
+				if (manage < 1 || manage > divisions.size()) {
+					
+					System.out.println("Invalid value entered");
+					System.out.println("DIVISIONS cancelled");
+					
+				} else {
+					
+					manage--;
+					System.out.print(divisions.get(manage).name + ": 0 to cancel, 1 to move/delete unit, 2 to reorder/swap, 3 to rename, 4 to delete: ");
+					switch (scan.nextInt()) {
+					
+						case 1:
+							
+							break;
+							
+						case 2:
+							System.out.print("Swap " + divisions.get(manage).name + " with which division? (Enter #) ");
+							int swap = scan.nextInt();
+							if (swap < 1 || swap > divisions.size()) {
+								
+								System.out.println("Invalid value entered");
+								System.out.println("DIVISIONS cancelled");
+								
+							} else if (swap - 1 == manage) {
+								
+								System.out.println("You can't swap a division with itself");
+								System.out.println("DIVISIONS cancelled");
+								
+							} else {
+								
+								swap--;
+								Division change = divisions.get(manage);
+								divisions.set(manage, divisions.get(swap));
+								divisions.set(swap, change);
+								System.out.println(divisions.get(swap).name + " swapped with " + divisions.get(manage).name);
+								
+							}
+							break;
+							
+						case 3:
+							System.out.print("Enter a new division name: ");
+							scan.nextLine();
+							String name = scan.nextLine();
+							if (name == "") {
+								
+								System.out.println("Invalid name");
+								System.out.println("DIVISIONS cancelled");
+								
+							} else if (name.indexOf(",") != -1 || name.indexOf("\\") != -1) {
+								
+								System.out.println("Name contains invalid characters (, and \\ are not allowed)");
+								System.out.println("DIVISIONS cancelled");
+								
+							} else {
+								
+								String old = divisions.get(manage).name;
+								divisions.get(manage).name = name;
+								System.out.println(old + " renamed to " + name);
+								
+							}
+							break;
+							
+						case 4:
+							boolean empty = true;
+							for (int i = 0; i < 10; i++) {
+								
+								if (divisions.get(manage).units[i] != null) {
+									
+									empty = false;
+									break;
+									
+								}
+								
+							}
+							if (empty) {
+								
+								System.out.println(divisions.get(manage).name + " deleted");
+								divisions.remove(manage);
+								
+							} else {
+								
+								System.out.println(divisions.get(manage).name + " still has units in it, move/disband these units to a different division first");
+								System.out.println("DIVISIONS cancelled");
+								
+							}
+							break;
+							
+						default:
+							System.out.println("DIVISIONS cancelled");
+					
+					}
+					
+				}
+				
+			} else if (choice == 2) {
+				
+				System.out.print("Enter division # to inspect: ");
+				int _choice = scan.nextInt();
+				if (_choice <= 0 || _choice > divisions.size()) {
+					
+					System.out.println("Invalid value entered");
+					System.out.println("DIVISIONS cancelled");
+					
+				} else {
+					
+					_choice--;
+					System.out.println(divisions.get(_choice).name.toUpperCase());
+					if (divisions.get(_choice).length() == 0) {
+						
+						System.out.println("(empty division)");
+						
+					} else {
+						
+						for (int i = 0; i < divisions.get(_choice).length(); i++) {
+							
+							Unit cur = divisions.get(_choice).get()[i];
+							System.out.println("[ " + Unit.stats_unit[cur.type][0] + " A | " + Unit.stats_unit[cur.type][1] + " D | " + Unit.stats_unit[cur.type][2] + " S | " + cur.hp + "/" + Unit.stats_unit[cur.type][3] + " HP ] " + Unit.names_unit[cur.type]);
+							
+						}
+						
+					}
+					
+				}
+				
+			} else if (choice == 3) {
+				
+				System.out.print("Name of new division: ");
+				scan.nextLine();
+				String name = scan.nextLine();
+				if (name == "") {
+					
+					System.out.println("Invalid name");
+					System.out.println("DIVISIONS cancelled");
+					
+				} else if (name.indexOf(",") != -1 || name.indexOf("\\") != -1) {
+					
+					System.out.println("Name contains invalid characters (, and \\ are not allowed)");
+					System.out.println("DIVISIONS cancelled");
+					
+				} else {
+					
+					divisions.add(new Division(name));
+					System.out.println("Created new division " + name);
+					
+				}
+				
+			} else if (choice == 4) {
+				
+				System.out.print("Which division # should be ready-to-defend? (-1 to indicate no division is ready-to-defend) ");
+				int _choice = scan.nextInt();
+				if (_choice > divisions.size() || _choice == 0 || _choice < -1) {
+					
+					System.out.println("Invalid value entered");
+					System.out.println("DIVISIONS cancelled");
+					
+				} else if (divisions.get(_choice - 1).length() == 0) {
+					
+					System.out.println("Empty divisions can't be ready-to-defend");
+					System.out.println("DIVISIONS cancelled");
+					
+				} else if (_choice != -1) {
+					
+					rtd = _choice - 1;
+					System.out.println(divisions.get(_choice - 1).name + " marked as ready-to-defend");
+					
+				} else {
+					
+					rtd = -1;
+					System.out.println("No divisions are ready-to-defend anymore");
+					
+				}
+				
+			}
+			
+		}
 		
 	}
 	
 	void cmd_recruit() {
 		
-		
+		System.out.println("RECRUIT UNITS");
+		String[] _names = {"Money", "Ammo", "BM", "Metal", "Fuel", "Uranium"};
+		int[] actual = new int[9];
+		int count = 0;
+		if (buildings[1] != 1 && techs[0] != 1) {
+			
+			System.out.println("You need to research Military I and construct a Barracks before you are able to recruit basic units.\nCome back later after this is done!");
+			
+		} else {
+			
+			if (military_announce == 2) {
+				
+				System.out.println("\nFirstly, let's recruit an INFANTRY.\nThese are the most basic unit of the game.\nBelow, you can see their stats next to their name: 3 A | 3 D | 1 S | 20 HP.\nThe A stands for ATTACK. This determines the base damage that your unit deals.\nThe D stands for DEFENSE. This value is used to calculate how much damage is reduced from an attack on your unit.\nThe S stands for SPEED. This affects the order in which units attack in a battle, and also the accuracy of your unit's attack.\nFinally, HP is the base health that your unit starts off at when it is first purchased.\nIt is also the maximum health that your unit can heal up to (more on this later).\nIn the rest of the description, you can see the one-time COST that the unit requires to hire/construct, and its UPKEEP which is used by the unit every day.\nSome units have special traits and they are denoted with a * next to its name.\nIn addition, all units cost 2 food to maintain.\nStart off by typing 1 in the dialog to purchase an INFANTRY.\n");
+				
+			}
+			
+			for (int i = 0; i < Unit.names_unit.length; i++) {
+				
+				if (techs[0] >= (Unit.req_unit[i])[0] && buildings[(Unit.req_unit[i])[1]] == 1) {
+					
+					actual[count] = i;
+					count++;
+					String stats = (Unit.stats_unit[i])[0] + " A | " + (Unit.stats_unit[i])[1] + " D | " + (Unit.stats_unit[i])[2] + " S | " + (Unit.stats_unit[i])[3] + " HP";
+					String cost = "";
+					for (int j = 0; j < Unit.cost_unit[i].length - 1; j++) {
+						
+						if ((Unit.cost_unit[i])[j] != 0) {
+							
+							cost += " " + (Unit.cost_unit[i])[j] + " " + _names[j];
+							
+						}
+						
+					}
+					cost += ", " + (Unit.cost_unit[i])[6] + " day(s)";
+					String upkeep = "";
+					for (int j = 0; j < Unit.upkeep_unit[i].length; j++) {
+						
+						if ((Unit.upkeep_unit[i])[j] != 0) {
+							
+							upkeep += " " + (Unit.upkeep_unit[i])[j] + " " + _names[j];
+							
+						}
+						
+					}
+					if (i == 1 || i == 3 || i == 4 || i == 6 || i == 7) {
+						
+						System.out.println((i + 1) + ") " + Unit.names_unit[i] + "* [ " + stats + " ]:" + cost + " (upkeep" + upkeep + ")");
+					
+					} else {
+						
+						System.out.println((i + 1) + ") " + Unit.names_unit[i] + " [ " + stats + " ]:" + cost + " (upkeep" + upkeep + ")");
+						
+					}
+						
+				}
+				
+			}
+			System.out.print("Enter unit # to purchase, 0 to cancel: ");
+			int choice = scan.nextInt();
+			if (choice <= 0 || choice > count) {
+				
+				System.out.println("RECRUIT cancelled");
+				
+			} else {
+				
+				choice = actual[choice - 1];
+				boolean valid = true;
+				for (int i = 0; i < Unit.cost_unit[choice].length - 1; i++) {
+					
+					if (rsc[Unit.ref_unit[i]] < (Unit.cost_unit[choice])[i]) {
+						
+						valid = false;
+						break;
+						
+					}
+					
+				}
+				if (!valid) {
+					
+					System.out.println("You don't have enough resources");
+					System.out.println("RECRUIT cancelled");
+					
+				} else {
+					
+					if (military_announce == 2) {
+						
+						if (choice == 0) {
+							
+							System.out.println("\nNice! You're one step away from recruiting your first unit!\nNow, you must select a division to place the unit into upon hire/construction completion.\nEnter 1 to select Division #1 below.\n");
+						
+						} else {
+							
+							military_announce = 0;
+							
+						}
+							
+					}
+					if (choice == 1) {
+						
+						System.out.println("Medic Special Trait: Has a 40% chance to heal an infantry-class unit by 6-12 HP");
+						
+					} else if (choice == 3) {
+						
+						System.out.println("Grenadier Special Trait: Can damage 0-4 additional non-air units by 10-55% original damage");
+						
+					} else if (choice == 4) {
+						
+						System.out.println("Tank Special Trait: Has 8 attack against infantry-class units");
+						
+					} else if (choice == 6) {
+						
+						System.out.println("Bomber Special Trait: 0 attack against air units but damages up to 4 units at a time");
+						
+					} else if (choice == 7) {
+						
+						System.out.println("T-80 Rodriguez Special Trait: Has 13 attack against non-air units");
+						
+					}
+					System.out.println("Place unit into...");
+					for (int i = 0; i < divisions.size(); i++) {
+					
+						System.out.println((i + 1) + ") " + divisions.get(i).name + " (" + divisions.get(i).length() + " unit(s))");
+						
+					}
+					System.out.print("Enter division # to place unit into: ");
+					int _choice = scan.nextInt();
+					if (_choice < 1 || _choice > divisions.size()) {
+						
+						System.out.println("Invalid value entered");
+						System.out.println("RECRUIT cancelled");
+						
+					} else {
+						
+						String _new = "";
+						for (int i = 0; i < Unit.cost_unit[choice].length - 1; i++) {
+							
+							if ((Unit.cost_unit[choice])[i] != 0) {
+								
+								rsc[Unit.ref_unit[i]] -= (Unit.cost_unit[choice])[i];
+								_new += " " + rsc[Unit.ref_unit[i]] + " " + rsc_names[Unit.ref_unit[i]];
+								
+							}
+							
+						}
+						pending_unit.add(new UnitPending(choice, (Unit.cost_unit[choice])[6], divisions.get(_choice - 1).id));
+						System.out.println("Recruited a(n) " + Unit.names_unit[choice] + " into " + divisions.get(_choice - 1).name);
+						System.out.println("You now have" + _new + "; the recruitment will take " + Unit.cost_unit[choice][6] + " day(s)");
+						time++;
+						if (military_announce == 2) {
+							
+							System.out.println("\nAwesome!\nNow you must wait a day for the INFANTRY to finish recruitment (recruitment starts on completion of today).\nAfter it is finished, you'll see a message in the DAY OVER screen, and you should then run DIVISIONS to see the DIVISIONS tutorial.");
+							military_announce = 3;
+							
+						}
+						
+					}
+					
+				}
+				
+			}
+			
+		}
 		
 	}
 
@@ -1682,7 +2120,7 @@ public class DiegoLand {
 
 			if (announce) {
 				
-				String[] features = {"-Consumer goods production unlocked\n-Metal production unlocked\n-Expand borders unlocked", "-Consumer goods population requirement\n-Military unlocked\n-Ammunition production unlocked", "-Expeditions unlocked\n! WARS UNLOCKED (run STATUS for more important info) !", "-Fuel production unlocked", "-???", "-Uranium production unlocked", "-You have reached the population cap! Great job!"};
+				String[] features = {"-Consumer goods production unlocked\n-Metal production unlocked\n-Expand borders unlocked", "-Consumer goods population requirement\n! MILITARY UNLOCKED (run STATUS for more important information) !\n-Ammunition production unlocked", "-Expeditions unlocked\n! WARS UNLOCKED (run STATUS for more important info) !", "-Fuel production unlocked", "-???", "-Uranium production unlocked", "-You have reached the population cap! Great job!"};
 				System.out.println("*** TIER " + getTier() + " UNLOCKED!!! ***");
 				System.out.println("New Features:");
 				System.out.println(features[getTier() - 2]);
@@ -1698,7 +2136,12 @@ public class DiegoLand {
 				announce = false;
 				if (getTier() == 3) {
 					
-					military_announce = "Welcome to your Diego Land's military!\nSince you have grown so far from the beginning, other neighboring nations are starting to perceive you as a potential threat.\nIt is now your job to defend your land from their attacks, and conquer these rivals.\nBefore wars unlock at Tier 4, you must build up your military by recruiting UNITS.\nUNITS are organized into 10-unit DIVISIONS, and these DIVISIONS are what fight for you.\nStart off by recruiting a UNIT using the RECRUIT command.\nThe command will walk you through purchasing one of the several kinds of UNITS, ";
+					divisions.add(new Division("Division #1"));
+					military_announce = 1;
+					
+				} else if (getTier() == 4) {
+					
+					military_announce = 1;
 					
 				}
 				
@@ -1822,6 +2265,56 @@ public class DiegoLand {
 			String sign = (happiness >= 0) ? "+" : "";
 			System.out.println("\nHappiness: " + sign + happiness);
 			System.out.println();
+			for (int i = 0; i < pending_unit.size(); i++) {
+				
+				pending_unit.get(i).time--;
+				if (pending_unit.get(i).time >= 0) {
+					
+					System.out.println("Your " + Unit.names_unit[pending_unit.get(i).type] + " still has " + (pending_unit.get(i).time + 1) + " day(s) of recruitment left");
+					
+				} else {
+					
+					int division = -1;
+					for (int j = 0; j < divisions.size(); j++) {
+						
+						System.out.println(divisions.get(j).name + " id is " + divisions.get(j).id);
+						if (divisions.get(j).id == pending_unit.get(i).division_id) {
+							
+							division = j;
+							break;
+							
+						}
+						
+					}
+					if (division == -1) {
+						
+						divisions.add(new Division("Division #" + (divisions.size() + 1)));
+						divisions.get(divisions.size() - 1).add(new Unit(pending_unit.get(i).type, (Unit.stats_unit[pending_unit.get(i).type])[3]));
+						division = divisions.size() - 1;
+						System.out.println("Your " + Unit.names_unit[pending_unit.get(i).type] + " has finished construction, and since " + divisions.get(division).name + " was deleted, it was placed into a new division: " + divisions.get(divisions.size() - 1).name);
+						
+					} else {
+						
+						if (divisions.get(division).add(new Unit(pending_unit.get(i).type, (Unit.stats_unit[pending_unit.get(i).type])[3]))) {
+							
+							System.out.println("Your " + Unit.names_unit[pending_unit.get(i).type] + " has finished construction and has been placed into " + divisions.get(division).name);
+							
+						} else {
+							
+							divisions.add(new Division("Division #" + (divisions.size() + 1)));
+							divisions.get(divisions.size() - 1).add(new Unit(pending_unit.get(i).type, (Unit.stats_unit[pending_unit.get(i).type])[3]));
+							System.out.println("Your " + Unit.names_unit[pending_unit.get(i).type] + " has finished construction, and since " + divisions.get(division).name + " was full, it was placed into a new division: " + divisions.get(divisions.size() - 1).name);
+							
+						}
+						
+					}
+					pending_unit.remove(i);
+					i--;
+					
+				}
+				System.out.println();
+				
+			}
 			for (int i = 0; i < buildings.length; i++) {
 				
 				if (buildings[i] <= -1) {
@@ -1897,6 +2390,10 @@ public class DiegoLand {
 					buildings = new int[5];
 					wars = new War[]{new War("Masekovia"), new War("Bell Republic"), new War("Goldedge"), new War("Isle of Vaktovia"), new War("Davis Land")};
 					divisions = new ArrayList<Division>();
+					rtd = -1;
+					military_announce = 0;
+					pending_unit = new ArrayList<UnitPending>();
+					Division._id = 0;
 					try {
 						
 						saveData();
@@ -1978,6 +2475,8 @@ public class DiegoLand {
 		save.Save(_announce, writer);
 		
 		save.Save(military_announce, writer);
+		save.Save(rtd, writer);
+		save.Save(writer, pending_unit);
 		save.Save(wars, writer);
 		save.Save(divisions, writer);
 
@@ -1994,6 +2493,7 @@ public class DiegoLand {
 
 		try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
 			
+			Division._id = 0;
 			int count = 0;
 			while ((line = br.readLine()) != null) {
 				
@@ -2001,16 +2501,12 @@ public class DiegoLand {
 				// use comma as separator
 				String[] data = line.split(csvSplitBy);
 				
-				if (count < 23) {
+				if (count < 24) {
 					
 					int[] int_data = new int[data.length];
 					for (int i = 0; i < int_data.length; i++) {
-						
-						if (count != 22) {
-							
-							int_data[i] = Integer.parseInt(data[i]);
-						
-						}
+				
+						int_data[i] = Integer.parseInt(data[i]);
 							
 					}
 					// TO-DO turn into a switch
@@ -2100,21 +2596,34 @@ public class DiegoLand {
 						
 					} else if (count == 22) {
 						
-						military_announce = data[0];
+						military_announce = int_data[0];
+						
+					} else if (count == 23) {
+						
+						rtd = int_data[0];
 						
 					}
 					
-				} else if (count == 23) {
+				} else if (count == 24) {
+					
+					for (int i = 1; i < data.length; i += 3) {
+						
+						pending_unit.add(new UnitPending(Integer.parseInt(data[i]), Integer.parseInt(data[i + 1]), Integer.parseInt(data[i + 2])));
+						
+					}
+			
+				} else if (count == 25) {
 				
 					int _count = 0;
 					int active = -1;
-					for (int i = 0; i < 25; i += 5) {
+					for (int i = 0; i < 30; i += 6) {
 						
 						wars[_count].probability = Double.parseDouble(data[i]);
 						wars[_count].name = data[i + 1];
 						wars[_count].score[0] = Integer.parseInt(data[i + 2]);
 						wars[_count].score[1] = Integer.parseInt(data[i + 3]);
-						wars[_count].active = Boolean.parseBoolean(data[i + 4]);
+						wars[_count].streak = Integer.parseInt(data[i + 4]);
+						wars[_count].active = Boolean.parseBoolean(data[i + 5]);
 						if (wars[_count].active) {
 							
 							active = _count;
@@ -2125,7 +2634,7 @@ public class DiegoLand {
 					}
 					if (active != -1) {
 						
-						int i = 25;
+						int i = 30;
 						String cur = "";
 						while (cur != ">") {
 							
@@ -2134,7 +2643,11 @@ public class DiegoLand {
 							_count = 0;
 							for (int j = 1; j < 21; j += 2) {
 								
-								add.units[_count] = new Unit(Integer.parseInt(data[i + j]), Integer.parseInt(data[i + j + 1]));
+								if (data[i + j] != "-1") {
+									
+									add.units[_count] = new Unit(Integer.parseInt(data[i + j]), Integer.parseInt(data[i + j + 1]));
+									
+								}
 								
 							}
 							wars[active].attack.add(add);
@@ -2145,7 +2658,11 @@ public class DiegoLand {
 						Division def = new Division(data[i]);
 						for (int j = 1; j < 21; j += 2) {
 							
-							def.units[_count] = new Unit(Integer.parseInt(data[i + j]), Integer.parseInt(data[i + j + 1]));
+							if (data[i + j] != "-1") {
+								
+								def.units[_count] = new Unit(Integer.parseInt(data[i + j]), Integer.parseInt(data[i + j + 1]));
+							
+							}	
 							
 						}
 						wars[active].defense = def;
@@ -2165,21 +2682,19 @@ public class DiegoLand {
 					int _count = 0;
 					for (int i = 1; i < 21; i += 2) {
 						
-						add.units[_count] = new Unit(Integer.parseInt(data[i]), Integer.parseInt(data[i + 1]));
+						if (Integer.parseInt(data[i]) != -1) {
+							
+							add.units[_count] = new Unit(Integer.parseInt(data[i]), Integer.parseInt(data[i + 1]));
+							
+						}
 						_count++;
 						
 					}
 					if (add.name != "" && add.name != null) {
 						
-						System.out.println(add.name + ":");
 						divisions.add(add);
 						
-					} else {
-						
-						System.out.println("nulled");
-						
 					}
-					System.out.println(add.name + ";");
 					
 				}
 				
@@ -2420,6 +2935,10 @@ public class DiegoLand {
 					game.buildings = new int[5];
 					game.wars = new War[]{new War("Masekovia"), new War("Bell Republic"), new War("Goldedge"), new War("Isle of Vaktovia"), new War("Davis Land")};
 					game.divisions = new ArrayList<Division>();
+					game.rtd = -1;
+					game.military_announce = 0;
+					game.pending_unit = new ArrayList<UnitPending>();
+					Division._id = 0;
 					try {
 						
 						game.saveData();
@@ -2470,6 +2989,10 @@ public class DiegoLand {
 			game.buildings = new int[5];
 			game.wars = new War[]{new War("Masekovia"), new War("Bell Republic"), new War("Goldedge"), new War("Isle of Vaktovia"), new War("Davis Land")};
 			game.divisions = new ArrayList<Division>();
+			game.rtd = -1;
+			game.military_announce = 0;
+			game.pending_unit = new ArrayList<UnitPending>();
+			Division._id = 0;
 			
 			game.resourceGen();
 	

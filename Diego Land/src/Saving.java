@@ -29,6 +29,21 @@ public class Saving {
 	
 	}
 	
+	public void Save(FileWriter writer, ArrayList<UnitPending> a) throws IOException {
+		
+		List<String> list = new ArrayList<String>();
+		list.add(Division._id + "");
+		for (int i = 0; i < a.size(); i++) {
+		
+			list.add(a.get(i).type + "");
+			list.add(a.get(i).time + "");
+			list.add(a.get(i).division_id + "");
+		
+		}
+		CSVUtils.writeLine(writer, list);
+		
+	}
+	
 	public void Save(War[] a, FileWriter writer) throws IOException {
 		
 		List<String> list = new ArrayList<String>();
@@ -39,6 +54,7 @@ public class Saving {
 			list.add(a[i].name);
 			list.add(a[i].score[0] + "");
 			list.add(a[i].score[1] + "");
+			list.add(a[i].streak + "");
 			if (a[i].active) {
 				
 				active = i;
@@ -60,9 +76,19 @@ public class Saving {
 				int _count = 0;
 				for (int k = 1; k < 21; k += 2) {
 				
-					units[k] = a[active].attack.get(j).units[_count].type + "";
-					units[j + 1] = a[active].attack.get(j).units[_count].hp + "";
-					_count++;
+					if (a[active].attack.get(j).units[_count] != null) {
+						
+						units[k] = a[active].attack.get(j).units[_count].type + "";
+						units[k + 1] = a[active].attack.get(j).units[_count].hp + "";
+						_count++;
+						
+					} else {
+						
+						units[k] = "-1";
+						units[k + 1] = "-1";
+						_count++;
+						
+					}
 					
 				}
 				list.addAll(Arrays.asList(units));
@@ -73,9 +99,13 @@ public class Saving {
 			list.add(a[active].defense.name);
 			for (int k = 1; k < 21; k += 2) {
 				
-				list.add(a[active].defense.units[_count].type + "");
-				list.add(a[active].defense.units[_count].hp + "");
-				_count++;
+				if (a[active].defense.units[_count] != null) {
+					
+					list.add(a[active].defense.units[_count].type + "");
+					list.add(a[active].defense.units[_count].hp + "");
+					_count++;
+					
+				}
 				
 			}
 			list.add(">");
@@ -100,12 +130,21 @@ public class Saving {
 			int count = 0;
 			for (int j = 1; j < 21; j += 2) {
 			
-				list[j] = a.get(i).units[count].type + "";
-				list[j + 1] = a.get(i).units[count].hp + "";
-				count++;
+				if (a.get(i).units[count] != null) {
+					
+					list[j] = a.get(i).units[count].type + "";
+					list[j + 1] = a.get(i).units[count].hp + "";
+					count++;
+					
+				} else {
+					
+					list[j] = "-1";
+					list[j + 1] = "-1";
+					count++;
+					
+				}
 				
 			}
-			System.out.println(list);
 			CSVUtils.writeLine(writer, Arrays.asList(list));
 			
 		}

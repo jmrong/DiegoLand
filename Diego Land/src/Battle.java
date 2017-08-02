@@ -1,3 +1,9 @@
+public class Battle {
+	
+	
+	
+}
+
 /* this will be migrated to the driver later, I'm trying to keep all non-object code in the driver
   
 import java.util.Random;

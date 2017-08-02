@@ -2,26 +2,65 @@ public class Division {
 	
 	public Unit[] units = new Unit[10];
 	public String name;
+	public int id;
+	public static int _id = 0;
 	// Removed ready to defend; this will be stored in the driver
 	
 	public Division(String name) {
 		
 		this.name = name;
+		this.id = _id;
+		_id++;
 	
 	}
 	
 	public int length() {
 		
+		int count = 0;
 		for (int i = 0; i < units.length; i++) {
 			
-			if (units[i] == null) {
+			if (units[i] != null) {
 				
-				return i + 1;
+				count++;
 				
 			}
 			
 		}
-		return -1;
+		return count;
+		
+	}
+	
+	public boolean add(Unit unit) {
+		
+		for (int i = 0; i < units.length; i++) {
+			
+			if (units[i] == null) {
+				
+				units[i] = unit;
+				return true;
+				
+			}
+			
+		}
+		return false;
+		
+	}
+	
+	public Unit[] get() {
+		
+		int count = 0;
+		Unit[] a = new Unit[this.length()];
+		for (int i = 0; i < units.length; i++) {
+			
+			if (units[i] != null) {
+				
+				a[count] = units[i];
+				count++;
+				
+			}
+			
+		}
+		return a;
 		
 	}
 	
