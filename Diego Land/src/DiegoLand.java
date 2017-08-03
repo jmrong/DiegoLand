@@ -1585,7 +1585,301 @@ public class DiegoLand {
 					switch (scan.nextInt()) {
 					
 						case 1:
-							
+							if (divisions.get(manage).length() == 0) {
+								
+								System.out.println("This division has no units");
+								System.out.println("DIVISIONS cancelled");
+								
+							} else {
+								
+								for (int i = 0; i < divisions.get(manage).length(); i++) {
+									
+									Unit cur = divisions.get(manage).get()[i];
+									System.out.println((i + 1) + ") [ " + cur.hp + "/" + Unit.stats_unit[cur.type][3] + " HP ] " + Unit.names_unit[cur.type]);
+									
+								}
+								System.out.print("0 to cancel, 1 to move between divisions (single unit, 2 for multiple units), 3 to reorder/swap, 4 to disband: ");
+								int _choice = scan.nextInt();
+								if (_choice <= 0 || _choice > 4) {
+									
+									System.out.println("DIVISIONS cancelled");
+									
+								} else if ((_choice == 1 || _choice == 2) && divisions.size() == 1) {
+									
+									System.out.println("Can't move units to other divisions since there are no others");
+									System.out.println("DIVISIONS cancelled");
+									
+								} else {
+										
+										switch (_choice) {
+										
+											case 1:
+												System.out.print("Which unit to perform action on? ");
+												int __choice = scan.nextInt();
+												int[] arr = new int[divisions.size()];
+												int count = 0;
+												if (__choice < 1 || __choice > divisions.get(manage).length()) {
+													
+													System.out.println("Invalid value entered");
+													System.out.println("DIVISIONS cancelled");
+													
+												} else {
+													
+													System.out.println("Listing non-full divisions:");
+													for (int i = 0; i < divisions.size(); i++) {
+														
+														if (divisions.get(i).length() != 10 && i != manage) {
+															
+															arr[count] = i;
+															count++;
+															String info = " empty";
+															if (divisions.get(i).length() != 0) {
+																
+																info = "";
+																int num = divisions.get(i).length();
+																boolean truncate = false;
+																if (num > 3) {
+																	
+																	num = 3;
+																	truncate = true;
+																	
+																}
+																for (int j = 0; j < num; j++) {
+																	
+																	info += " " + Unit.names_unit[divisions.get(i).get()[j].type];
+																	
+																}
+																if (truncate) {
+																	
+																	info += "... [" + divisions.get(i).length() + "]";
+																	
+																} else {
+																	
+																	info += " [" + divisions.get(i).length() + "]";
+																	
+																}
+																
+															}
+															if (i == rtd) {
+																
+																System.out.println((count) + ") " + divisions.get(i).name + " [RTD]:" + info);
+															
+															} else {
+																
+																System.out.println((count) + ") " + divisions.get(i).name + ":" + info);
+																
+															}
+															
+														}
+														
+													}
+													System.out.print("Which division would you like to move " + Unit.names_unit[divisions.get(manage).units[__choice - 1].type] + " to? ");
+													int move = scan.nextInt();
+													if (move < 1 || move > count) {
+														
+														System.out.println("Invalid value entered");
+														System.out.println("DIVISIONS cancelled");
+														
+													} else {
+														
+														divisions.get(arr[move - 1]).add(divisions.get(manage).units[__choice - 1]);
+														System.out.println(Unit.names_unit[divisions.get(manage).units[__choice - 1].type] + " moved to " + divisions.get(arr[move - 1]).name);
+														divisions.get(manage).units[__choice - 1] = null;
+														
+													}
+																										
+												}
+												break;
+												
+											case 2:
+												System.out.println("Input the range of unit #'s which will be moved...");
+												System.out.print("Enter lower #: ");
+												int lower = scan.nextInt();
+												if (lower < 1 || lower > divisions.get(manage).length()) {
+													
+													System.out.println("Invalid value entered");
+													System.out.println("DIVISIONS cancelled");
+													break;
+													
+												}
+												System.out.print("Enter higher #: ");
+												int high = scan.nextInt();
+												if (high < 1 || high > divisions.get(manage).length() || high <= lower) {
+													
+													System.out.println("Invalid value entered");
+													System.out.println("DIVISIONS cancelled");
+													break;
+													
+												}
+												System.out.println("Listing valid divisions:");
+												arr = new int[divisions.size()];
+												count = 0;
+												for (int i = 0; i < divisions.size(); i++) {
+													
+													if (divisions.get(i).length() != 10 && i != manage && divisions.get(i).length() + (high - lower + 1) <= 10) {
+														
+														arr[count] = i;
+														count++;
+														String info = " empty";
+														if (divisions.get(i).length() != 0) {
+															
+															info = "";
+															int num = divisions.get(i).length();
+															boolean truncate = false;
+															if (num > 3) {
+																
+																num = 3;
+																truncate = true;
+																
+															}
+															for (int j = 0; j < num; j++) {
+																
+																info += " " + Unit.names_unit[divisions.get(i).get()[j].type];
+																
+															}
+															if (truncate) {
+																
+																info += "... [" + divisions.get(i).length() + "]";
+																
+															} else {
+																
+																info += " [" + divisions.get(i).length() + "]";
+																
+															}
+															
+														}
+														if (i == rtd) {
+															
+															System.out.println((count) + ") " + divisions.get(i).name + " [RTD]:" + info);
+														
+														} else {
+															
+															System.out.println((count) + ") " + divisions.get(i).name + ":" + info);
+															
+														}
+														
+													}
+													
+												}
+												System.out.print("Which division to move units to? ");
+												int move = scan.nextInt();
+												if (move < 1 || move > count) {
+													
+													System.out.println("Invalid value entered");
+													System.out.println("DIVISIONS cancelled");
+													
+												} else {
+													
+													for (int i = lower - 1; i < high; i++) {
+														
+														divisions.get(arr[move - 1]).add(divisions.get(manage).units[i]);
+														
+													}
+													for (int i = lower - 1; i < high; i++) {
+														
+														divisions.get(manage).units[i] = null;
+														
+													}
+													System.out.println((high - lower + 1) + " unit(s) moved to " + divisions.get(arr[move - 1]).name);
+													
+												}
+												break;
+											
+											case 3:
+												System.out.print("Swap which unit? ");
+												__choice = scan.nextInt();
+												if (__choice < 1 || __choice > divisions.get(manage).length()) {
+													
+													System.out.println("Invalid value entered");
+													System.out.println("DIVISIONS cancelled");
+													
+												} else {
+													
+													System.out.print("With which unit? ");
+													int swap = scan.nextInt();
+													if (swap < 1 || swap > divisions.get(manage).length()) {
+														
+														System.out.println("Invalid value entered");
+														System.out.println("DIVISIONS cancelled");
+														
+													} else if (swap == __choice) {
+														
+														System.out.println("Can't swap a unit with itself");
+														System.out.println("DIVISIONS cancelled");
+														
+													} else {
+														
+														Unit _swap = divisions.get(manage).units[__choice - 1];
+														divisions.get(manage).units[__choice - 1] = divisions.get(manage).units[swap - 1];
+														divisions.get(manage).units[swap - 1] = _swap;
+														System.out.println(Unit.names_unit[_swap.type] + " was swapped with " + Unit.names_unit[divisions.get(manage).units[__choice - 1].type]);
+														
+													}
+													
+												}
+												break;
+												
+											case 4:
+												System.out.print("Disband which unit? ");
+												__choice = scan.nextInt();
+												if (__choice < 1 || __choice > divisions.get(manage).length()) {
+													
+													System.out.println("Invalid value entered");
+													System.out.println("DIVISIONS cancelled");
+													
+												} else {
+													
+													System.out.println("Disband " + Unit.names_unit[divisions.get(manage).units[__choice - 1].type] + "?");
+													String back = "";
+													int _type = divisions.get(manage).units[__choice - 1].type;
+													for (int i = 0; i < Unit.cost_unit[_type].length - 1; i++) {
+														
+														if (Unit.cost_unit[_type][i] > 1) {
+															
+															back += (Unit.cost_unit[_type][i] / 3 * 2) + " " + rsc_names[Unit.ref_unit[i]] + " ";
+															
+														}
+														
+													}
+													if (back != "") {
+														
+														System.out.println("You will receive 66% of the original cost: " + back);
+														
+													}
+													System.out.print("Confirm Y/N ");
+													if (scan.next().equalsIgnoreCase("Y")) {
+														
+														String _new = "";														
+														for (int i = 0; i < Unit.cost_unit[_type].length - 1; i++) {
+															
+															if (Unit.cost_unit[_type][i] > 1) {
+																
+																int old = rsc[Unit.ref_unit[i]];
+																rsc[Unit.ref_unit[i]] += Unit.cost_unit[_type][i] / 3 * 2;
+																_new = rsc[Unit.ref_unit[i]] + " " + rsc_names[rsc[Unit.ref_unit[i]]] + " (+" + (rsc[Unit.ref_unit[i]] - old) + ") ";
+																
+															}
+															
+														}
+														divisions.get(manage).units[__choice - 1] = null;
+														System.out.println("Disbanded " + Unit.names_unit[_type]);
+														System.out.println("You now have " + _new);
+														
+													} else {
+														
+														System.out.println("DIVISIONS cancelled");
+														
+													}
+													
+												}
+												break;
+												
+										}
+										
+									}
+									
+								}
+								
 							break;
 							
 						case 2:
